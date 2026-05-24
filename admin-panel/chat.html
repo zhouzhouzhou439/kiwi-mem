@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Kiwi Chat</title>
+<link rel="manifest" href="data:application/json,{}">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0f1117">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
+<style>* { box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 0; overflow: hidden; }
+  :root { --bg: #0f1117; --card: #1a1d27; --border: #2a2d3a; --hover: #252836; --input: #1e2130; --kiwi: #22c55e; --kiwi-light: #4ade80; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* Login */
+  .login-wrap { position:fixed; inset:0; background:var(--bg); z-index:9999; display:flex; align-items:center; justify-content:center; }
+  .login-box { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:40px; width:340px; text-align:center; }
+  .login-box input { background:var(--input); border:1px solid var(--border); color:#e2e8f0; border-radius:8px; padding:10px 14px; width:100%; outline:none; margin-bottom:16px; text-align:center; }
+  .login-box input:focus { border-color: var(--kiwi); }
+  .login-box button { background:var(--kiwi); color:#fff; border:none; border-radius:8px; padding:10px; width:100%; cursor:pointer; font-size:15px; }
+  .login-box button:hover { background:#16a34a; }
+
+  /* Layout */
+  .app { display:flex; height:100vh; background:var(--bg); color:#e2e8f0; }
+  .sidebar { width:260px; background:var(--card); border-right:1px solid var(--border); display:flex; flex-direction:column; flex-shrink:0; }
+  .chat-main { flex:1; display:flex; flex-direction:column; min-width:0; }
+
+  /* Sidebar */
+  .sidebar-header { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+  .sidebar-list { flex:1; overflow-y:auto; padding:8px; }
+  .conv-item { padding:10px 14px; border-radius:8px; cursor:pointer; margin-bottom:2px; display:flex; justify-content:space-between; align-items:center; font-size:14px; color:#94a3b8; }
+  .conv-item:hover { background:var(--hover); color:#e2e8f0; }
+  .conv-item.active { background:rgba(34,197,94,0.1); color:var(--kiwi-light); }
+  .conv-item .del-btn { opacity:0; background:none; border:none; color:#ef4444; cursor:pointer; font-size:16px; padding:2px 6px; border-radius:4px; }
+  .conv-item:hover .del-btn { opacity:1; }
+  .conv-item .del-btn:hover { background:rgba(239,68,68,0.15); }
+  .new-chat-btn { margin:12px; padding:10px; background:var(--input); border:1px solid var(--border); border-radius:8px; color:#94a3b8; cursor:pointer; text-align:center; font-size:14px; }
+  .new-chat-btn:hover { border-color:var(--kiwi); color:var(--kiwi-light); }
+
+  /* Chat area */
+  .chat-header { padding:14px 24px; border-bottom:1px solid var(--border); font-size:15px; font-weight:500; display:flex; align-items:center; justify-content:space-between; }
+  .messages { flex:1; overflow-y:auto; padding:20px 24px; }
+  .msg { margin-bottom:20px; display:flex; gap:12px; max-width:800px; margin-left:auto; margin-right:auto; width:100%; animation: fadeIn 0.2s ease; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+  .msg-user { justify-content:flex-end; }
+  .msg-avatar { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
+  .msg-user .msg-avatar { background:rgba(96,165,250,0.15); color:#60a5fa; order:2; }
+  .msg-ai .msg-avatar { background:rgba(34,197,94,0.15); color:var(--kiwi-light); }
+  .msg-bubble { max-width:75%; padding:12px 16px; border-radius:12px; font-size:14.5px; line-height:1.7; }
+  .msg-user .msg-bubble { background:rgba(96,165,250,0.1); border:1px solid rgba(96,165,250,0.2); color:#e2e8f0; border-bottom-right-radius:4px; }
+  .msg-ai .msg-bubble { background:var(--card); border:1px solid var(--border); color:#e2e8f0; border-bottom-left-radius:4px; }
+  .msg-bubble p { margin:0 0 8px; } .msg-bubble p:last-child { margin:0; }
+  .msg-bubble pre { background:#0d1017; border-radius:8px; padding:12px; overflow-x:auto; margin:8px 0; font-size:13px; }
+  .msg-bubble code { font-family:'JetBrains Mono',monospace; font-size:13px; }
+  .msg-bubble code:not(pre code) { background:rgba(148,163,184,0.1); padding:2px 6px; border-radius:4px; }
+  .msg-bubble ul, .msg-bubble ol { padding-left:20px; margin:8px 0; }
+  .msg-bubble li { margin:4px 0; }
+  .msg-bubble blockquote { border-left:3px solid var(--kiwi); padding-left:12px; margin:8px 0; color:#94a3b8; }
+
+  /* Typing indicator */
+  .typing { display:inline-flex; gap:4px; padding:8px 12px; }
+  .typing span { width:6px; height:6px; background:#94a3b8; border-radius:50%; animation:bounce 1.2s infinite; }
+  .typing span:nth-child(2) { animation-delay:0.2s; }
+  .typing span:nth-child(3) { animation-delay:0.4s; }
+  @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+
+  /* Input */
+  .input-area { padding:16px 24px; border-top:1px solid var(--border); }
+  .input-wrap { max-width:800px; margin:0 auto; display:flex; gap:10px; align-items:flex-end; }
+  .input-wrap textarea { flex:1; background:var(--input); border:1px solid var(--border); color:#e2e8f0; border-radius:12px; padding:12px 16px; resize:none; outline:none; font-size:14.5px; line-height:1.5; max-height:150px; min-height:46px; font-family:inherit; }
+  .input-wrap textarea:focus { border-color:var(--kiwi); }
+  .send-btn { background:var(--kiwi); color:#fff; border:none; border-radius:10px; width:42px; height:42px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .send-btn:hover { background:#16a34a; }
+  .send-btn:disabled { background:var(--border); cursor:not-allowed; }
+
+  /* Mobile */
+  .menu-btn { display:none; background:none; border:none; color:#94a3b8; font-size:22px; cursor:pointer; padding:4px 8px; }
+  @media (max-width: 768px) {
+    .sidebar { position:fixed; left:-280px; top:0; bottom:0; z-index:100; transition:left 0.25s ease; box-shadow:2px 0 20px rgba(0,0,0,0.5); }
+    .sidebar.open { left:0; }
+    .menu-btn { display:block; }
+    .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:99; }
+    .overlay.show { display:block; }
+    .msg-bubble { max-width:88%; }.messages { padding:16px; }
+    .input-area { padding:12px 16px; }
+  }
+
+  /* Empty state */
+  .empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:#4b5563; }
+  .empty-state .icon { font-size:48px; margin-bottom:16px; }
+  .empty-state p { font-size:15px; }
+
+  /* Toast */
+  .toast { position:fixed; top:20px; right:20px; padding:12px 20px; border-radius:8px; color:#fff; z-index:9999; animation:fadeIn 0.3s; font-size:14px; }
+  .toast-ok { background:#16a34a; } .toast-err { background:#dc2626; }
+</style>
+</head>
+<body>
+
+<!--===== Login===== -->
+<div id="login-wrap" class="login-wrap">
+  <div class="login-box">
+    <div style="font-size:42px; margin-bottom:12px;">🥝</div>
+    <h1 style="font-size:20px; font-weight:600; margin:0 0 4px;">Kiwi Chat</h1>
+    <p style="font-size:13px; color:#64748b; margin:0 0 24px;">输入密码开始对话</p>
+    <input type="password" id="login-input" placeholder="ACCESS_TOKEN" onkeydown="if(event.key==='Enter')doLogin()">
+    <button onclick="doLogin()">进入</button>
+    <p id="login-err" style="color:#ef4444; font-size:13px; margin-top:12px; display:none;"></p>
+  </div>
+</div>
+
+<!-- ===== App ===== -->
+<div class="app" id="app" style="display:none;">
+  <!-- Overlay for mobile -->
+  <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <span style="font-weight:600;">🥝 对话</span>
+      <a href="index.html" style="font-size:12px; color:#64748b; text-decoration:none;" title="管理面板">⚙️ 管理</a>
+    </div>
+    <div class="sidebar-list" id="conv-list"></div>
+    <div class="new-chat-btn" onclick="newConversation()">+ 新对话</div>
+  </aside>
+
+  <!-- Main -->
+  <div class="chat-main">
+    <div class="chat-header">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+        <span id="chat-title">新对话</span>
+      </div>
+      <div style="font-size:12px; color:#64748b;" id="memory-hint"></div>
+    </div>
+    <div class="messages" id="messages">
+      <div class="empty-state">
+        <div class="icon">🥝</div>
+        <p>开始新的对话吧</p>
+      </div>
+    </div>
+    <div class="input-area">
+      <div class="input-wrap">
+        <textarea id="msg-input" rows="1" placeholder="输入消息…" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <button class="send-btn" id="send-btn" onclick="sendMessage()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// Config
+// ============================================================
+const API ='https://kiwi-mem-api.zeabur.app';
+let TOKEN = localStorage.getItem('kiwi_chat_token') || '';
+let conversations = JSON.parse(localStorage.getItem('kiwi_conversations') || '[]');
+let currentConvId = null;
+let isStreaming = false;
+
+// ============================================================
+// Login
+// ============================================================
+async function doLogin() {
+  const input = document.getElementById('login-input').value.trim();
+  if (!input) return;
+  try {
+    const res = await fetch(`${API}/admin/config`, { headers: { 'Authorization': `Bearer ${input}`, 'Content-Type': 'application/json' } });
+    if (res.status === 401) {
+      document.getElementById('login-err').textContent = '密码错误';
+      document.getElementById('login-err').style.display = 'block';
+      return;
+    }
+    TOKEN = input;
+    localStorage.setItem('kiwi_chat_token', TOKEN);
+    showApp();
+  } catch(e) {
+    document.getElementById('login-err').textContent = '连接失败：' + e.message;
+    document.getElementById('login-err').style.display = 'block';
+  }
+}
+
+function showApp() {
+  document.getElementById('login-wrap').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  renderConvList();
+  if (conversations.length === 0) newConversation();
+  else switchConv(conversations[0].id);
+}
+
+// Auto-login
+(async function() {
+  if (TOKEN) {
+    try {
+      const res = await fetch(`${API}/admin/config`, { headers: { 'Authorization': `Bearer ${TOKEN}` } });
+      if (res.status !== 401) { showApp(); return; }
+    } catch(e) {}
+  }
+  document.getElementById('login-wrap').style.display = '';
+})();
+
+// ============================================================
+// Conversations
+// ============================================================
+function newConversation() {
+  const conv = {
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+    title: '新对话',
+    messages: [],
+    created: Date.now()
+  };
+  conversations.unshift(conv);
+  saveConversations();
+  switchConv(conv.id);renderConvList();
+}
+
+function switchConv(id) {
+  currentConvId = id;
+  const conv = conversations.find(c => c.id === id);
+  if (!conv) return;
+  document.getElementById('chat-title').textContent = conv.title;
+  renderMessages(conv.messages);
+  renderConvList();
+  closeSidebar();
+}
+
+function deleteConv(id, e) {
+  e.stopPropagation();
+  if (!confirm('删除这个对话？')) return;
+  conversations = conversations.filter(c => c.id !== id);
+  saveConversations();
+  if (currentConvId === id) {
+    if (conversations.length > 0) switchConv(conversations[0].id);
+    else newConversation();
+  }
+  renderConvList();
+}
+
+function renderConvList() {
+  const list = document.getElementById('conv-list');
+  list.innerHTML = conversations.map(c => `
+    <div class="conv-item ${c.id === currentConvId ? 'active' : ''}" onclick="switchConv('${c.id}')">
+      <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escHtml(c.title)}</span>
+      <button class="del-btn" onclick="deleteConv('${c.id}', event)">×</button>
+    </div>
+  `).join('');
+}
+
+function saveConversations() {
+  localStorage.setItem('kiwi_conversations', JSON.stringify(conversations));
+}
+
+function getCurrentConv() {
+  return conversations.find(c => c.id === currentConvId);
+}
+
+// ============================================================
+// Messages
+// ============================================================
+function renderMessages(messages) {
+  const el = document.getElementById('messages');
+  if (messages.length === 0) {
+    el.innerHTML = '<div class="empty-state"><div class="icon">🥝</div><p>开始新的对话吧</p></div>';
+    return;
+  }
+  el.innerHTML = messages.map((m, i) => renderMsg(m)).join('');
+  el.scrollTop = el.scrollHeight;
+}
+
+function renderMsg(m) {
+  const isUser = m.role === 'user';
+  const rendered = isUser ? escHtml(m.content) : renderMarkdown(m.content);
+  return `
+    <div class="msg ${isUser ? 'msg-user' : 'msg-ai'}">
+      <div class="msg-avatar">${isUser ? '👤' : '🥝'}</div>
+      <div class="msg-bubble">${rendered}</div>
+    </div>`;
+}
+
+function renderMarkdown(text) {
+  if (!text) return '';
+  try {
+    const html = marked.parse(text, { breaks: true });
+    return DOMPurify.sanitize(html);
+  } catch(e) {
+    return escHtml(text);
+  }
+}
+
+function appendTyping() {
+  const el = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'msg msg-ai';
+  div.id = 'typing-msg';
+  div.innerHTML = `<div class="msg-avatar">🥝</div><div class="msg-bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  el.appendChild(div);
+  el.scrollTop = el.scrollHeight;
+}
+
+function updateStreamMsg(text) {
+  let el = document.getElementById('typing-msg');
+  if (!el) {
+    const container = document.getElementById('messages');
+    el = document.createElement('div');
+    el.className = 'msg msg-ai';
+    el.id = 'typing-msg';
+    el.innerHTML = `<div class="msg-avatar">🥝</div><div class="msg-bubble"></div>`;
+    container.appendChild(el);
+  }
+  const bubble = el.querySelector('.msg-bubble');
+  bubble.innerHTML = renderMarkdown(text);
+  document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+}
+
+function finalizeStreamMsg() {
+  const el = document.getElementById('typing-msg');
+  if (el) el.removeAttribute('id');
+}
+
+// ============================================================
+// Send Message
+// ============================================================
+async function sendMessage() {
+  const input = document.getElementById('msg-input');
+  const text = input.value.trim();
+  if (!text || isStreaming) return;
+
+  const conv = getCurrentConv();
+  if (!conv) return;
+
+  // Add user message
+  conv.messages.push({ role: 'user', content: text });
+  input.value = '';
+  autoResize(input);
+  renderMessages(conv.messages);
+
+  // Auto-title on first message
+  if (conv.messages.length === 1) {
+    conv.title = text.slice(0, 30) + (text.length > 30 ? '…' : '');
+    document.getElementById('chat-title').textContent = conv.title;renderConvList();
+  }
+
+  // Send to API
+  isStreaming = true;
+  document.getElementById('send-btn').disabled = true;
+  appendTyping();
+
+  let aiText = '';
+
+  try {
+    // Build messages for API (send conversation history)
+    const apiMessages = conv.messages.map(m => ({ role: m.role, content: m.content }));
+
+    const res = await fetch(`${API}/v1/chat/completions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${TOKEN}` },
+      body: JSON.stringify({
+        model: 'K-claude-opus-4-6',
+        messages: apiMessages,
+        stream: true,
+        conversation_id: conv.id
+      })
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error?.message || `HTTP ${res.status}`);
+    }
+
+    // Stream reading
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || '';
+
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const data = line.slice(6).trim();
+        if (data === '[DONE]') break;
+        try {
+          const json = JSON.parse(data);
+          const delta = json.choices?.[0]?.delta?.content;
+          if (delta) {
+            aiText += delta;
+            updateStreamMsg(aiText);
+          }
+        } catch(e) {}
+      }
+    }
+
+    // If no streaming content, try non-stream response
+    if (!aiText && res.headers.get('content-type')?.includes('json')) {
+      const json = await res.json();
+      aiText = json.choices?.[0]?.message?.content || '';
+    }} catch(e) {
+    aiText = `⚠️ 发送失败：${e.message}`;
+    toast(e.message, false);
+  }
+
+  // Finalize
+  if (aiText) {
+    conv.messages.push({ role: 'assistant', content: aiText });}
+  finalizeStreamMsg();
+  if (!aiText) {
+    const el = document.getElementById('typing-msg');
+    if (el) el.remove();
+  }
+  saveConversations();
+  isStreaming = false;
+  document.getElementById('send-btn').disabled = false;
+
+  // Update title from backend (if available)
+  updateTitle(conv);
+}
+
+async function updateTitle(conv) {
+  if (conv.messages.length !== 2) return; // Only after first exchange
+  try {
+    // Try to get title from backend
+    const res = await fetch(`${API}/conversations/${conv.id}`, { headers: { 'Authorization': `Bearer ${TOKEN}` } });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.title && data.title !== '新对话') {
+        conv.title = data.title;
+        document.getElementById('chat-title').textContent = conv.title;
+        saveConversations();
+        renderConvList();
+      }
+    }
+  } catch(e) {}
+}
+
+// ============================================================
+// Input Handling
+// ============================================================
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 150) + 'px';
+}
+
+// ============================================================
+// Mobile Sidebar
+// ============================================================
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+
+// ============================================================
+// Utils
+// ============================================================
+function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function toast(msg, ok = true) {
+  const el = document.createElement('div');
+  el.className = `toast ${ok ? 'toast-ok' : 'toast-err'}`;
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+</script>
+</body>
+</html>
