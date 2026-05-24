@@ -816,9 +816,40 @@ function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&
 function escAttr(s) { return String(s||'').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 
 // ============================================================
-// Init
+// Login Gate
 // ============================================================
-switchTab('dashboard');
+async function doLogin() {
+  const input = document.getElementById('login-token').value.trim();
+  if (!input) return;
+  TOKEN = input;
+  try {
+    const res = await fetch(`${API}/admin/config`, { headers: { 'Authorization': `Bearer ${TOKEN}` } });
+    if (res.status === 401) {
+      document.getElementById('login-error').classList.remove('hidden');
+      return;
+    }
+    localStorage.setItem('kiwi_admin_token', TOKEN);
+    document.getElementById('login-gate').classList.add('hidden');
+    switchTab('dashboard');
+  } catch(e) {
+    document.getElementById('login-error').textContent = '连接失败：' + e.message;
+    document.getElementById('login-error').classList.remove('hidden');
+  }
+}
+// Init
+(async function() {
+  if (TOKEN) {
+    try {
+      const res = await fetch(`${API}/admin/config`, { headers: { 'Authorization': `Bearer ${TOKEN}` } });
+      if (res.status !== 401) {
+        document.getElementById('login-gate').classList.add('hidden');
+        switchTab('dashboard');
+        return;
+      }
+    } catch(e) {}
+  }
+  document.getElementById('login-gate').style.display = '';
+})();
 </script>
 </body>
 </html>
