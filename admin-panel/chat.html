@@ -15,12 +15,10 @@
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 0; overflow: hidden; }
 :root { --bg: #0f1117; --card: #1a1d27; --border: #2a2d3a; --hover: #252836; --input: #1e2130; --kiwi: #22c55e; --kiwi-light: #4ade80; }
 
-/* Scrollbar */
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-/* Login */
 .login-wrap { position:fixed; inset:0; background:var(--bg); z-index:9999; display:flex; align-items:center; justify-content:center; }
 .login-box { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:40px; width:340px; text-align:center; }
 .login-box input { background:var(--input); border:1px solid var(--border); color:#e2e8f0; border-radius:8px; padding:10px 14px; width:100%; outline:none; margin-bottom:16px; text-align:center; }
@@ -28,12 +26,10 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; m
 .login-box button { background:var(--kiwi); color:#fff; border:none; border-radius:8px; padding:10px; width:100%; cursor:pointer; font-size:15px; }
 .login-box button:hover { background:#16a34a; }
 
-/* Layout */
 .app { display:flex; height:100vh; background:var(--bg); color:#e2e8f0; }
 .sidebar { width:260px; background:var(--card); border-right:1px solid var(--border); display:flex; flex-direction:column; flex-shrink:0; }
 .chat-main { flex:1; display:flex; flex-direction:column; min-width:0; }
 
-/* Sidebar */
 .sidebar-header { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
 .sidebar-list { flex:1; overflow-y:auto; padding:8px; }
 .conv-item { padding:10px 14px; border-radius:8px; cursor:pointer; margin-bottom:2px; display:flex; justify-content:space-between; align-items:center; font-size:14px; color:#94a3b8; }
@@ -45,7 +41,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; m
 .new-chat-btn { margin:12px; padding:10px; background:var(--input); border:1px solid var(--border); border-radius:8px; color:#94a3b8; cursor:pointer; text-align:center; font-size:14px; }
 .new-chat-btn:hover { border-color:var(--kiwi); color:var(--kiwi-light); }
 
-/* Chat area */
 .chat-header { padding:14px 24px; border-bottom:1px solid var(--border); font-size:15px; font-weight:500; display:flex; align-items:center; justify-content:space-between; }
 .messages { flex:1; overflow-y:auto; padding:20px 24px; }
 .msg { margin-bottom:20px; display:flex; gap:12px; max-width:800px; margin-left:auto; margin-right:auto; width:100%; animation: fadeIn 0.2s ease; }
@@ -67,7 +62,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; m
 .msg-bubble li { margin:4px 0; }
 .msg-bubble blockquote { border-left:3px solid var(--kiwi); padding-left:12px; margin:8px 0; color:#94a3b8; }
 
-/* Thinking block */
 .thinking-block { background:rgba(168,85,247,0.06); border:1px solid rgba(168,85,247,0.15); border-radius:8px; margin-bottom:10px; font-size:13px; }
 .thinking-block summary { padding:8px 12px; cursor:pointer; color:#a855f7; list-style:none; display:flex; align-items:center; gap:6px; user-select:none; }
 .thinking-block summary::-webkit-details-marker { display:none; }
@@ -75,34 +69,32 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; m
 .thinking-block[open] summary::before { transform:rotate(90deg); }
 .thinking-content { padding:4px 12px 10px; color:#94a3b8; white-space:pre-wrap; max-height:200px; overflow-y:auto; line-height:1.6; word-break:break-word; }
 
-/* Message meta (time + duration) */
 .msg-meta { display:flex; gap:8px; font-size:11px; color:#4b5563; margin-top:4px; padding:0 4px; }
-
-/* Message actions (regenerate) */
 .msg-actions { display:flex; gap:4px; margin-top:2px; padding:0 2px; }
 .regen-btn { background:none; border:none; cursor:pointer; font-size:13px; padding:2px 8px; border-radius:4px; color:#64748b; opacity:0; transition: opacity 0.2s, background 0.2s; }
 .msg:hover .regen-btn { opacity:1; }
 .regen-btn:hover { opacity:1; background:var(--hover); color:var(--kiwi-light); }
 
-/* Settings dropdown */
 .settings-btn { background:none; border:none; cursor:pointer; font-size:18px; padding:4px 8px; border-radius:6px; line-height:1; }
 .settings-btn:hover { background:var(--hover); }
 .settings-wrap { position:relative; }
-.settings-dropdown { display:none; position:absolute; top:calc(100% + 8px); right:0; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px 16px; min-width:180px; box-shadow:0 8px 30px rgba(0,0,0,0.4); z-index:50; }
+.settings-dropdown { display:none; position:absolute; top:calc(100% + 8px); right:0; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px 16px; min-width:220px; box-shadow:0 8px 30px rgba(0,0,0,0.4); z-index:50; }
 .settings-dropdown.open { display:block; }
 .settings-title { font-size:12px; color:#64748b; margin-bottom:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; }
 .settings-item { display:flex; align-items:center; gap:10px; padding:7px 0; cursor:pointer; font-size:13px; color:#94a3b8; transition:color 0.15s; }
 .settings-item:hover { color:#e2e8f0; }
 .settings-item input[type="checkbox"] { accent-color:var(--kiwi); width:15px; height:15px; cursor:pointer; }
+.settings-divider { height:1px; background:var(--border); margin:10px 0; }
+.settings-select { width:100%; background:var(--input); border:1px solid var(--border); color:#e2e8f0; border-radius:6px; padding:7px 10px; font-size:13px; outline:none; cursor:pointer; margin-top:4px; }
+.settings-select:focus { border-color:var(--kiwi); }
+.settings-select option { background:var(--card); color:#e2e8f0; }
 
-/* Typing indicator */
 .typing { display:inline-flex; gap:4px; padding:8px 12px; }
 .typing span { width:6px; height:6px; background:#94a3b8; border-radius:50%; animation:bounce 1.2s infinite; }
 .typing span:nth-child(2) { animation-delay:0.2s; }
 .typing span:nth-child(3) { animation-delay:0.4s; }
 @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
 
-/* Input */
 .input-area { padding:16px 24px; border-top:1px solid var(--border); }
 .input-wrap { max-width:800px; margin:0 auto; display:flex; gap:10px; align-items:flex-end; }
 .input-wrap textarea { flex:1; background:var(--input); border:1px solid var(--border); color:#e2e8f0; border-radius:12px; padding:12px 16px; resize:none; outline:none; font-size:14.5px; line-height:1.5; max-height:150px; min-height:46px; font-family:inherit; }
@@ -111,7 +103,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; m
 .send-btn:hover { background:#16a34a; }
 .send-btn:disabled { background:var(--border); cursor:not-allowed; }
 
-/* Mobile */
 .menu-btn { display:none; background:none; border:none; color:#94a3b8; font-size:22px; cursor:pointer; padding:4px 8px; }
 @media (max-width: 768px) {
   .sidebar { position:fixed; left:-280px; top:0; bottom:0; z-index:100; transition:left 0.25s ease; box-shadow:2px 0 20px rgba(0,0,0,0.5); }
@@ -130,12 +121,10 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; m
   .input-area { padding-bottom: calc(16px + env(safe-area-inset-bottom)); }
 }
 
-/* Empty state */
 .empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:#4b5563; }
 .empty-state .icon { font-size:48px; margin-bottom:16px; }
 .empty-state p { font-size:15px; }
 
-/* Toast */
 .toast { position:fixed; top:20px; right:20px; padding:12px 20px; border-radius:8px; color:#fff; z-index:9999; animation:fadeIn 0.3s; font-size:14px; }
 .toast-ok { background:#16a34a; } .toast-err { background:#dc2626; }
 </style>
@@ -158,7 +147,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; m
 <div class="app" id="app" style="display:none;">
   <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
-  <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <span style="font-weight:600;">🥝 对话</span>
@@ -168,7 +156,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; m
     <div class="new-chat-btn" onclick="newConversation()">+ 新对话</div>
   </aside>
 
-  <!-- Main -->
   <div class="chat-main">
     <div class="chat-header">
       <div style="display:flex; align-items:center; gap:10px;">
@@ -193,6 +180,21 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; m
               <input type="checkbox" id="set-thinking" onchange="updateSetting('showThinking', this.checked)">
               <span>💭 思维过程</span>
             </label>
+            <div class="settings-divider"></div>
+            <div class="settings-title">模型选择</div>
+            <select id="set-model" class="settings-select" onchange="updateSetting('model', this.value)">
+  <optgroup label="━━ 按量计费 ━━">
+    <option value="按量K-claude-opus-4-6">按量K-opus-4-6 · 入¥1.9 出¥9.5/1M</option>
+    <option value="按量R-claude-opus-4-6">按量R-opus-4-6 · 入¥5.2 出¥26.1/1M</option>
+  </optgroup>
+  <optgroup label="━━ 按次计费 ━━">
+    <option value="K-claude-opus-4-6">K-opus-4-6 · ¥0.057/次 (8K截断)</option>
+    <option value="R-claude-opus-4-6">R-opus-4-6 · ¥0.247/次 企业级</option>
+    <option value="R-claude-opus-4-6-thinking">R-opus-4-6-thinking · ¥0.247/次</option>
+    <option value="福利B-claude-opus-4-6">福利B-opus-4-6 · ¥0.209/次</option>
+    <option value="F-claude-opus-4-6">F-opus-4-6 · ¥0.209/次</option>
+  </optgroup>
+</select>
           </div>
         </div>
       </div>
@@ -226,10 +228,14 @@ let conversations = JSON.parse(localStorage.getItem('kiwi_conversations') || '[]
 let currentConvId = null;
 let isStreaming = false;
 
+// Live timer
+let liveTimerInterval = null;
+let streamStartTime = null;
+
 // ============================================================
-// Settings (localStorage persistent)
+// Settings
 // ============================================================
-const defaultSettings = { showTime: false, showDuration: false, showThinking: false };
+const defaultSettings = { showTime: false, showDuration: false, showThinking: false, model: '按量K-claude-opus-4-6' };
 let settings = { ...defaultSettings, ...JSON.parse(localStorage.getItem('kiwi_settings') || '{}') };
 
 function saveSettings() { localStorage.setItem('kiwi_settings', JSON.stringify(settings)); }
@@ -237,8 +243,10 @@ function saveSettings() { localStorage.setItem('kiwi_settings', JSON.stringify(s
 function updateSetting(key, value) {
   settings[key] = value;
   saveSettings();
-  const conv = getCurrentConv();
-  if (conv) renderMessages(conv.messages);
+  if (key !== 'model') {
+    const conv = getCurrentConv();
+    if (conv) renderMessages(conv.messages);
+  }
 }
 
 function toggleSettingsPanel(e) {
@@ -250,9 +258,17 @@ function initSettingsUI() {
   document.getElementById('set-time').checked = settings.showTime;
   document.getElementById('set-duration').checked = settings.showDuration;
   document.getElementById('set-thinking').checked = settings.showThinking;
+  const modelSelect = document.getElementById('set-model');
+  // If stored model isn't in options, add it
+  if (settings.model && !Array.from(modelSelect.options).some(o => o.value === settings.model)) {
+    const opt = document.createElement('option');
+    opt.value = settings.model;
+    opt.textContent = settings.model;
+    modelSelect.appendChild(opt);
+  }
+  modelSelect.value = settings.model;
 }
 
-// Close settings dropdown when clicking outside
 document.addEventListener('click', function(e) {
   const dd = document.getElementById('settings-dropdown');
   if (dd && dd.classList.contains('open') && !e.target.closest('.settings-wrap')) {
@@ -371,6 +387,34 @@ function formatTime(ts) {
 }
 
 // ============================================================
+// Live Timer (real-time counting during generation)
+// ============================================================
+function startLiveTimer() {
+  streamStartTime = Date.now();
+  updateStreamMeta(); // Show immediately
+  liveTimerInterval = setInterval(updateStreamMeta, 100);
+}
+
+function stopLiveTimer() {
+  if (liveTimerInterval) {
+    clearInterval(liveTimerInterval);
+    liveTimerInterval = null;
+  }
+}
+
+function updateStreamMeta() {
+  const metaEl = document.getElementById('stream-meta');
+  if (!metaEl) return;
+  const parts = [];
+  if (settings.showTime) parts.push(formatTime(streamStartTime));
+  if (settings.showDuration) {
+    const elapsed = ((Date.now() - streamStartTime) / 1000).toFixed(1);
+    parts.push('⏱️ ' + elapsed + 's');
+  }
+  metaEl.textContent = parts.join(' · ');
+}
+
+// ============================================================
 // Thinking Parser
 // ============================================================
 function parseThinking(text) {
@@ -404,10 +448,8 @@ function renderMsg(m, index, total) {
   const isUser = m.role === 'user';
   const isLastAi = !isUser && index === total - 1;
 
-  // --- Bubble content ---
   let bubbleHtml = '';
 
-  // Thinking block (AI only)
   if (!isUser && m.thinking && settings.showThinking) {
     const len = m.thinking.length;
     bubbleHtml += `<details class="thinking-block">
@@ -416,21 +458,13 @@ function renderMsg(m, index, total) {
     </details>`;
   }
 
-  // Main content
   bubbleHtml += isUser ? escHtml(m.content) : renderMarkdown(m.content);
 
-  // --- Meta line (time + duration) ---
   let metaParts = [];
-  if (settings.showTime && m.time) {
-    metaParts.push(formatTime(m.time));
-  }
-  if (!isUser && settings.showDuration && m.duration) {
-    metaParts.push('⏱️ ' + m.duration.toFixed(1) + 's');
-  }
-  const metaHtml = metaParts.length > 0
-    ? `<div class="msg-meta">${metaParts.join(' · ')}</div>` : '';
+  if (settings.showTime && m.time) metaParts.push(formatTime(m.time));
+  if (!isUser && settings.showDuration && m.duration) metaParts.push('⏱️ ' + m.duration.toFixed(1) + 's');
+  const metaHtml = metaParts.length > 0 ? `<div class="msg-meta">${metaParts.join(' · ')}</div>` : '';
 
-  // --- Regenerate button (last AI message only) ---
   const regenHtml = (isLastAi && !isStreaming)
     ? `<div class="msg-actions"><button class="regen-btn" onclick="regenerate()" title="重新生成">🔄 重说</button></div>` : '';
 
@@ -461,13 +495,19 @@ function appendTyping() {
   const div = document.createElement('div');
   div.className = 'msg msg-ai';
   div.id = 'typing-msg';
+
+  const showMeta = settings.showTime || settings.showDuration;
+
   div.innerHTML = `
     <div class="msg-avatar">🥝</div>
     <div class="msg-col">
       <div class="msg-bubble"><div class="typing"><span></span><span></span><span></span></div></div>
+      ${showMeta ? '<div class="msg-meta" id="stream-meta"></div>' : ''}
     </div>`;
   el.appendChild(div);
   el.scrollTop = el.scrollHeight;
+
+  startLiveTimer();
 }
 
 function updateStreamMsg(text, thinking) {
@@ -477,13 +517,20 @@ function updateStreamMsg(text, thinking) {
     el = document.createElement('div');
     el.className = 'msg msg-ai';
     el.id = 'typing-msg';
-    el.innerHTML = `<div class="msg-avatar">🥝</div><div class="msg-col"><div class="msg-bubble"></div></div>`;
+    const showMeta = settings.showTime || settings.showDuration;
+    el.innerHTML = `
+      <div class="msg-avatar">🥝</div>
+      <div class="msg-col">
+        <div class="msg-bubble"></div>
+        ${showMeta ? '<div class="msg-meta" id="stream-meta"></div>' : ''}
+      </div>`;
     container.appendChild(el);
+    startLiveTimer();
   }
+
   const bubble = el.querySelector('.msg-bubble');
   let html = '';
 
-  // Show thinking if enabled
   if (thinking && settings.showThinking) {
     html += `<details class="thinking-block" open>
       <summary>💭 思维中…</summary>
@@ -491,7 +538,6 @@ function updateStreamMsg(text, thinking) {
     </details>`;
   }
 
-  // Show content or typing dots
   if (text) {
     html += renderMarkdown(text);
   } else if (!thinking || !settings.showThinking) {
@@ -504,6 +550,7 @@ function updateStreamMsg(text, thinking) {
 }
 
 function finalizeStreamMsg() {
+  stopLiveTimer();
   const el = document.getElementById('typing-msg');
   if (el) el.removeAttribute('id');
 }
@@ -519,13 +566,11 @@ async function sendMessage() {
   const conv = getCurrentConv();
   if (!conv) return;
 
-  // Add user message with timestamp
   conv.messages.push({ role: 'user', content: text, time: Date.now() });
   input.value = '';
   autoResize(input);
   renderMessages(conv.messages);
 
-  // Auto-title on first user message
   if (conv.messages.filter(m => m.role === 'user').length === 1) {
     conv.title = text.slice(0, 30) + (text.length > 30 ? '…' : '');
     document.getElementById('chat-title').textContent = conv.title;
@@ -536,13 +581,12 @@ async function sendMessage() {
 }
 
 // ============================================================
-// Regenerate (重说)
+// Regenerate
 // ============================================================
 async function regenerate() {
   const conv = getCurrentConv();
   if (!conv || isStreaming) return;
 
-  // Remove last AI message(s)
   while (conv.messages.length > 0 && conv.messages[conv.messages.length - 1].role === 'assistant') {
     conv.messages.pop();
   }
@@ -553,7 +597,7 @@ async function regenerate() {
 }
 
 // ============================================================
-// Core Send Logic (shared by send & regenerate)
+// Core Send Logic
 // ============================================================
 async function doSend(conv) {
   isStreaming = true;
@@ -565,11 +609,9 @@ async function doSend(conv) {
   const startTime = Date.now();
 
   try {
-    // Build API messages with Beijing time awareness
     const timeStr = getBeijingTime();
     const apiMessages = conv.messages.map((m, i, arr) => {
       const msg = { role: m.role, content: m.content };
-      // Inject current time into last user message (API only, not stored)
       if (m.role === 'user' && i === arr.length - 1) {
         msg.content = `[当前时间：${timeStr}]\n${m.content}`;
       }
@@ -580,7 +622,7 @@ async function doSend(conv) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${TOKEN}` },
       body: JSON.stringify({
-        model: '按量K-claude-opus-4-6',
+        model: settings.model,
         messages: apiMessages,
         stream: true,
         conversation_id: conv.id
@@ -592,7 +634,6 @@ async function doSend(conv) {
       throw new Error(errData.error?.message || `HTTP ${res.status}`);
     }
 
-    // Stream reading
     const reader = res.body.getReader();
     const decoder = new TextDecoder();
     let buffer = '';
@@ -613,14 +654,10 @@ async function doSend(conv) {
           const delta = json.choices?.[0]?.delta;
           if (!delta) continue;
 
-          // Reasoning/thinking content (separate field from some APIs)
           const reasoning = delta.reasoning_content || delta.reasoning;
           if (reasoning) thinkingText += reasoning;
-
-          // Regular content
           if (delta.content) aiText += delta.content;
 
-          // Check for <think> tags embedded in content
           let displayContent = aiText;
           let displayThinking = thinkingText;
           if (aiText.includes('<think>')) {
@@ -636,7 +673,6 @@ async function doSend(conv) {
       }
     }
 
-    // Final parse: extract <think> tags from content
     if (aiText.includes('<think>')) {
       const parsed = parseThinking(aiText);
       if (parsed.thinking) {
@@ -646,14 +682,12 @@ async function doSend(conv) {
     }
 
   } catch(e) {
-    aiText = `⚠️ 发送失败：${e.message}`;
+    aiText = `⚠️ 请求失败 (${e.message})`;
     toast(e.message, false);
   }
 
-  // Calculate duration
   const duration = (Date.now() - startTime) / 1000;
 
-  // Save AI message
   if (aiText) {
     const aiMsg = { role: 'assistant', content: aiText, time: Date.now(), duration: duration };
     if (thinkingText) aiMsg.thinking = thinkingText;
