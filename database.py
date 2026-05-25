@@ -581,11 +581,10 @@ async def get_embedding(text: str, embed_url: str = None, embed_key: str = None)
     """调用 Embedding API 生成向量"""
     if not embed_url:
         if not EMBEDDING_API_KEY:
-            print("⚠️  Embedding API Key 未设置，无法生成 embedding")
+            print("⚠️  Embedding API Key 未设置")
             return None
         embed_url = EMBEDDING_API_URL or _get_embedding_url()
         embed_key = EMBEDDING_API_KEY
-
     try:
         async with httpx.AsyncClient(timeout=15) as client:
             resp = await client.post(
@@ -599,15 +598,12 @@ async def get_embedding(text: str, embed_url: str = None, embed_key: str = None)
                     "input": text,
                 },
             )
-
             if resp.status_code == 200:
                 data = resp.json()
-                embedding = data["data"][0]["embedding"]
-                return embedding
+                return data["data"][0]["embedding"]
             else:
                 print(f"⚠️  Embedding API 返回 {resp.status_code}: {resp.text[:200]}")
                 return None
-
     except Exception as e:
         print(f"⚠️  Embedding生成失败: {e}")
         return None
