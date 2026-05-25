@@ -561,22 +561,6 @@ async def init_tables():
 # Embedding 生成
 # ============================================================
 
-async def get_embedding(text: str) -> Optional[List[float]]:
-    """
-    调用 Embedding API 生成向量
-    优先从供应商数据库路由，降级到环境变量
-    """
-    embed_url = None
-    embed_key = None
-
-    try:
-        provider_info = await resolve_provider_for_model(EMBEDDING_MODEL)
-        if provider_info:
-            base = provider_info["api_base_url"].rstrip("/")
-            if base.endswith("/chat/completions"):
-                base = base.rsplit("/chat/completions", 1)[0]
-            embed_url = f"{base}/embeddings"
-            embed_key = provider_info["api_key"]
 async def get_embedding(text: str, embed_url: str = None, embed_key: str = None) -> Optional[List[float]]:
     """调用 Embedding API 生成向量"""
     if not embed_url:
