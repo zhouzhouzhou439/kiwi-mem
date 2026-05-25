@@ -364,7 +364,7 @@ async function sendMessage() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${TOKEN}` },
       body: JSON.stringify({
-        model: 'K-claude-opus-4-6',
+        model: '按量K-claude-opus-4-6',
         messages: apiMessages,
         stream: true,
         conversation_id: conv.id
