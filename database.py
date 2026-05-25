@@ -577,9 +577,8 @@ async def get_embedding(text: str) -> Optional[List[float]]:
                 base = base.rsplit("/chat/completions", 1)[0]
             embed_url = f"{base}/embeddings"
             embed_key = provider_info["api_key"]
-    except Exception as e:
-        print(f"⚠️  Embedding 供应商路由失败，降级到环境变量: {e}")
-
+async def get_embedding(text: str, embed_url: str = None, embed_key: str = None) -> Optional[List[float]]:
+    """调用 Embedding API 生成向量"""
     if not embed_url:
         if not EMBEDDING_API_KEY:
             print("⚠️  Embedding API Key 未设置，无法生成 embedding")
@@ -592,22 +591,24 @@ async def get_embedding(text: str) -> Optional[List[float]]:
             resp = await client.post(
                 embed_url,
                 headers={
-                    "Authorization": f"Bearer {EMBEDDING_API_KEY}",
+                    "Authorization": f"Bearer {embed_key}",
                     "Content-Type": "application/json",
                 },
                 json={
                     "model": EMBEDDING_MODEL,
                     "input": text,
                 },
-            )
-
-            if resp.status_code == 200:
+            )if resp.status_code == 200:
                 data = resp.json()
                 embedding = data["data"][0]["embedding"]
                 return embedding
             else:
-                print(f"⚠️Embedding API 返回 {resp.status_code}: {resp.text[:200]}")
+                print(f"⚠️  Embedding API 返回 {resp.status_code}: {resp.text[:200]}")
                 return None
+
+    except Exception as e:
+        print(f"⚠️  Embedding生成失败: {e}")
+        return None
 
     except Exception as e:
         print(f"⚠️  Embedding 生成失败: {e}")
