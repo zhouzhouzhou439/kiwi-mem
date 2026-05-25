@@ -70,24 +70,49 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; m
 .thinking-content { padding:4px 12px 10px; color:#94a3b8; white-space:pre-wrap; max-height:200px; overflow-y:auto; line-height:1.6; word-break:break-word; }
 
 .msg-meta { display:flex; gap:8px; font-size:11px; color:#4b5563; margin-top:4px; padding:0 4px; }
-.msg-actions { display:flex; gap:4px; margin-top:2px; padding:0 2px; }
-.regen-btn { background:none; border:none; cursor:pointer; font-size:13px; padding:2px 8px; border-radius:4px; color:#64748b; opacity:0.5; transition: opacity 0.2s, background 0.2s; }
-.msg:hover .regen-btn { opacity:1; }
-.regen-btn:hover { opacity:1; background:var(--hover); color:var(--kiwi-light); }
+
+.msg-actions { display:flex; align-items:center; gap:4px; margin-top:2px; padding:0 2px; }
+.action-toggle { background:none; border:none; cursor:pointer; color:#4b5563; font-size:16px; padding:2px 8px; border-radius:4px; letter-spacing:2px; line-height:1; }
+.action-toggle:hover { background:var(--hover); color:#94a3b8; }
+.action-buttons { display:flex; gap:2px; flex-wrap:wrap; align-items:center; }
+.act-btn { background:var(--input); border:1px solid var(--border); cursor:pointer; font-size:12px; padding:3px 10px; border-radius:6px; color:#94a3b8; transition:all 0.15s; white-space:nowrap; }
+.act-btn:hover { border-color:var(--kiwi); color:var(--kiwi-light); background:rgba(34,197,94,0.06); }
+.act-del:hover { border-color:#ef4444; color:#ef4444; background:rgba(239,68,68,0.06); }
+.act-cont:hover { border-color:#60a5fa; color:#60a5fa; background:rgba(96,165,250,0.06); }
+.act-regen:hover { border-color:#f59e0b; color:#f59e0b; background:rgba(245,158,11,0.06); }
+
+.edit-textarea { width:100%; min-height:80px; background:var(--input); border:1px solid var(--kiwi); color:#e2e8f0; border-radius:8px; padding:10px; font-size:14px; font-family:inherit; resize:vertical; outline:none; line-height:1.6; }
+.edit-actions { display:flex; gap:8px; margin-top:8px; }
+.edit-save, .edit-cancel { border:none; border-radius:6px; padding:5px 14px; font-size:13px; cursor:pointer; }
+.edit-save { background:var(--kiwi); color:#fff; }
+.edit-save:hover { background:#16a34a; }
+.edit-cancel { background:var(--border); color:#94a3b8; }
+.edit-cancel:hover { background:var(--hover); color:#e2e8f0; }
+
+.batch-checkbox { width:18px; height:18px; accent-color:#ef4444; cursor:pointer; flex-shrink:0; }
+.batch-bar { position:fixed; bottom:0; left:0; right:0; background:var(--card); border-top:1px solid var(--border); padding:12px 24px; display:flex; align-items:center; justify-content:center; gap:16px; z-index:80; animation:fadeIn 0.2s; }
+.batch-bar button { border:none; border-radius:8px; padding:8px 20px; font-size:14px; cursor:pointer; }
+.batch-del-btn { background:#ef4444; color:#fff; }
+.batch-del-btn:hover { background:#dc2626; }
+.batch-del-btn:disabled { background:#4b5563; cursor:not-allowed; }
+.batch-cancel-btn { background:var(--border); color:#94a3b8; }
+.batch-cancel-btn:hover { background:var(--hover); color:#e2e8f0; }
+.batch-count { color:#94a3b8; font-size:14px; }
 
 .settings-btn { background:none; border:none; cursor:pointer; font-size:18px; padding:4px 8px; border-radius:6px; line-height:1; }
 .settings-btn:hover { background:var(--hover); }
 .settings-wrap { position:relative; }
-.settings-dropdown { display:none; position:absolute; top:calc(100% + 8px); right:0; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px 16px; min-width:220px; box-shadow:0 8px 30px rgba(0,0,0,0.4); z-index:50; }
+.settings-dropdown { display:none; position:absolute; top:calc(100% + 8px); right:0; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px 16px; min-width:240px; box-shadow:0 8px 30px rgba(0,0,0,0.4); z-index:50; }
 .settings-dropdown.open { display:block; }
 .settings-title { font-size:12px; color:#64748b; margin-bottom:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; }
 .settings-item { display:flex; align-items:center; gap:10px; padding:7px 0; cursor:pointer; font-size:13px; color:#94a3b8; transition:color 0.15s; }
 .settings-item:hover { color:#e2e8f0; }
 .settings-item input[type="checkbox"] { accent-color:var(--kiwi); width:15px; height:15px; cursor:pointer; }
 .settings-divider { height:1px; background:var(--border); margin:10px 0; }
-.settings-select { width:100%; background:var(--input); border:1px solid var(--border); color:#e2e8f0; border-radius:6px; padding:7px 10px; font-size:13px; outline:none; cursor:pointer; margin-top:4px; }
+.settings-select { width:100%; background:var(--input); border:1px solid var(--border); color:#e2e8f0; border-radius:6px; padding:7px 10px; font-size:12px; outline:none; cursor:pointer; margin-top:4px; }
 .settings-select:focus { border-color:var(--kiwi); }
 .settings-select option { background:var(--card); color:#e2e8f0; }
+.settings-select optgroup { color:#64748b; font-style:normal; }
 
 .typing { display:inline-flex; gap:4px; padding:8px 12px; }
 .typing span { width:6px; height:6px; background:#94a3b8; border-radius:50%; animation:bounce 1.2s infinite; }
@@ -102,6 +127,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; m
 .send-btn { background:var(--kiwi); color:#fff; border:none; border-radius:10px; width:42px; height:42px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:background 0.15s; }
 .send-btn:hover { background:#16a34a; }
 .send-btn:disabled { background:var(--border); cursor:not-allowed; }
+.stop-btn { background:#ef4444 !important; }
+.stop-btn:hover { background:#dc2626 !important; }
 
 .menu-btn { display:none; background:none; border:none; color:#94a3b8; font-size:22px; cursor:pointer; padding:4px 8px; }
 @media (max-width: 768px) {
@@ -114,7 +141,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; m
   .messages { padding:16px; }
   .input-area { padding:12px 16px; }
   .chat-header { padding:12px 16px; }
-  .regen-btn { opacity:0.6; }
   .settings-dropdown { right:-10px; }
 }
 @supports (padding: env(safe-area-inset-bottom)) {
@@ -183,18 +209,18 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; m
             <div class="settings-divider"></div>
             <div class="settings-title">模型选择</div>
             <select id="set-model" class="settings-select" onchange="updateSetting('model', this.value)">
-  <optgroup label="━━ 按量计费 ━━">
-    <option value="按量K-claude-opus-4-6">按量K-opus-4-6 · 入¥1.9 出¥9.5/1M</option>
-    <option value="按量R-claude-opus-4-6">按量R-opus-4-6 · 入¥5.2 出¥26.1/1M</option>
-  </optgroup>
-  <optgroup label="━━ 按次计费 ━━">
-    <option value="K-claude-opus-4-6">K-opus-4-6 · ¥0.057/次 (8K截断)</option>
-    <option value="R-claude-opus-4-6">R-opus-4-6 · ¥0.247/次 企业级</option>
-    <option value="R-claude-opus-4-6-thinking">R-opus-4-6-thinking · ¥0.247/次</option>
-    <option value="福利B-claude-opus-4-6">福利B-opus-4-6 · ¥0.209/次</option>
-    <option value="F-claude-opus-4-6">F-opus-4-6 · ¥0.209/次</option>
-  </optgroup>
-</select>
+              <optgroup label="━━ 按量计费 ━━">
+                <option value="按量K-claude-opus-4-6">按量K-opus-4-6 · 入¥1.9 出¥9.5/1M</option>
+                <option value="按量R-claude-opus-4-6">按量R-opus-4-6 · 入¥5.2 出¥26.1/1M</option>
+              </optgroup>
+              <optgroup label="━━ 按次计费 ━━">
+                <option value="K-claude-opus-4-6">K-opus-4-6 · ¥0.057/次 (8K截断)</option>
+                <option value="R-claude-opus-4-6">R-opus-4-6 · ¥0.247/次 企业级</option>
+                <option value="R-claude-opus-4-6-thinking">R-opus-4-6-thinking · ¥0.247/次</option>
+                <option value="福利B-claude-opus-4-6">福利B-opus-4-6 · ¥0.209/次</option>
+                <option value="F-claude-opus-4-6">F-opus-4-6 · ¥0.209/次</option>
+              </optgroup>
+            </select>
           </div>
         </div>
       </div>
@@ -207,7 +233,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; m
       </div>
     </div>
 
-    <div class="input-area">
+    <div class="input-area" id="input-area">
       <div class="input-wrap">
         <textarea id="msg-input" rows="1" placeholder="输入消息…" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
         <button class="send-btn" id="send-btn" onclick="sendMessage()">
@@ -218,15 +244,30 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; m
   </div>
 </div>
 
+<!-- Batch delete bar -->
+<div class="batch-bar" id="batch-bar" style="display:none;">
+  <span class="batch-count" id="batch-count">已选 0 条</span>
+  <button class="batch-del-btn" id="batch-del-btn" onclick="confirmBatchDelete()" disabled>🗑️ 删除已选</button>
+  <button class="batch-cancel-btn" onclick="exitBatchMode()">取消</button>
+</div>
+
 <script>
 // ============================================================
 // Config & State
 // ============================================================
 const API = 'https://kiwi-mem-api.zeabur.app';
+const SEND_ICON = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>';
+const STOP_ICON = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>';
+
 let TOKEN = localStorage.getItem('kiwi_chat_token') || '';
 let conversations = JSON.parse(localStorage.getItem('kiwi_conversations') || '[]');
 let currentConvId = null;
 let isStreaming = false;
+let abortController = null;
+
+// Batch delete
+let isBatchMode = false;
+let batchSelected = new Set();
 
 // Live timer
 let liveTimerInterval = null;
@@ -259,7 +300,6 @@ function initSettingsUI() {
   document.getElementById('set-duration').checked = settings.showDuration;
   document.getElementById('set-thinking').checked = settings.showThinking;
   const modelSelect = document.getElementById('set-model');
-  // If stored model isn't in options, add it
   if (settings.model && !Array.from(modelSelect.options).some(o => o.value === settings.model)) {
     const opt = document.createElement('option');
     opt.value = settings.model;
@@ -270,9 +310,12 @@ function initSettingsUI() {
 }
 
 document.addEventListener('click', function(e) {
-  const dd = document.getElementById('settings-dropdown');
-  if (dd && dd.classList.contains('open') && !e.target.closest('.settings-wrap')) {
-    dd.classList.remove('open');
+  if (!e.target.closest('.settings-wrap')) {
+    const dd = document.getElementById('settings-dropdown');
+    if (dd) dd.classList.remove('open');
+  }
+  if (!e.target.closest('.msg-actions')) {
+    document.querySelectorAll('.action-buttons').forEach(el => el.style.display = 'none');
   }
 });
 
@@ -321,12 +364,7 @@ function showApp() {
 // Conversations
 // ============================================================
 function newConversation() {
-  const conv = {
-    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-    title: '新对话',
-    messages: [],
-    created: Date.now()
-  };
+  const conv = { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), title: '新对话', messages: [], created: Date.now() };
   conversations.unshift(conv);
   saveConversations();
   switchConv(conv.id);
@@ -338,6 +376,7 @@ function switchConv(id) {
   const conv = conversations.find(c => c.id === id);
   if (!conv) return;
   document.getElementById('chat-title').textContent = conv.title;
+  if (isBatchMode) exitBatchMode();
   renderMessages(conv.messages);
   renderConvList();
   closeSidebar();
@@ -373,33 +412,27 @@ function getCurrentConv() { return conversations.find(c => c.id === currentConvI
 // ============================================================
 function getBeijingTime() {
   return new Date().toLocaleString('zh-CN', {
-    timeZone: 'Asia/Shanghai',
-    year: 'numeric', month: 'long', day: 'numeric',
+    timeZone: 'Asia/Shanghai', year: 'numeric', month: 'long', day: 'numeric',
     weekday: 'long', hour: '2-digit', minute: '2-digit'
   });
 }
 
 function formatTime(ts) {
   if (!ts) return '';
-  return new Date(ts).toLocaleTimeString('zh-CN', {
-    timeZone: 'Asia/Shanghai', hour: '2-digit', minute: '2-digit'
-  });
+  return new Date(ts).toLocaleTimeString('zh-CN', { timeZone: 'Asia/Shanghai', hour: '2-digit', minute: '2-digit' });
 }
 
 // ============================================================
-// Live Timer (real-time counting during generation)
+// Live Timer
 // ============================================================
 function startLiveTimer() {
   streamStartTime = Date.now();
-  updateStreamMeta(); // Show immediately
+  updateStreamMeta();
   liveTimerInterval = setInterval(updateStreamMeta, 100);
 }
 
 function stopLiveTimer() {
-  if (liveTimerInterval) {
-    clearInterval(liveTimerInterval);
-    liveTimerInterval = null;
-  }
+  if (liveTimerInterval) { clearInterval(liveTimerInterval); liveTimerInterval = null; }
 }
 
 function updateStreamMeta() {
@@ -407,27 +440,50 @@ function updateStreamMeta() {
   if (!metaEl) return;
   const parts = [];
   if (settings.showTime) parts.push(formatTime(streamStartTime));
-  if (settings.showDuration) {
-    const elapsed = ((Date.now() - streamStartTime) / 1000).toFixed(1);
-    parts.push('⏱️ ' + elapsed + 's');
-  }
+  if (settings.showDuration) parts.push('⏱️ ' + ((Date.now() - streamStartTime) / 1000).toFixed(1) + 's');
   metaEl.textContent = parts.join(' · ');
 }
 
 // ============================================================
-// Thinking Parser
+// Send Button State
+// ============================================================
+function setSendMode() {
+  const btn = document.getElementById('send-btn');
+  btn.innerHTML = SEND_ICON;
+  btn.classList.remove('stop-btn');
+  btn.disabled = false;
+  btn.onclick = sendMessage;
+}
+
+function setStopMode() {
+  const btn = document.getElementById('send-btn');
+  btn.innerHTML = STOP_ICON;
+  btn.classList.add('stop-btn');
+  btn.disabled = false;
+  btn.onclick = stopGeneration;
+}
+
+function stopGeneration() {
+  if (abortController) {
+    abortController.abort();
+    abortController = null;
+    toast('已停止生成', true);
+  }
+}
+
+// ============================================================
+// Thinking Parser (case-insensitive)
 // ============================================================
 function parseThinking(text) {
-  const startTag = '<think>';
-  const endTag = '</think>';
-  const startIdx = text.indexOf(startTag);
-  if (startIdx === -1) return { thinking: '', content: text };
-  const endIdx = text.indexOf(endTag);
-  if (endIdx === -1) {
-    return { thinking: text.slice(startIdx + startTag.length), content: '' };
+  const regex = /<think>([\s\S]*?)<\/think>/i;
+  const match = text.match(regex);
+  if (!match) {
+    const openMatch = text.match(/<think>([\s\S]*?)$/i);
+    if (openMatch) return { thinking: openMatch[1].trim(), content: '' };
+    return { thinking: '', content: text };
   }
-  const thinking = text.slice(startIdx + startTag.length, endIdx).trim();
-  const content = (text.slice(0, startIdx) + text.slice(endIdx + endTag.length)).trim();
+  const thinking = match[1].trim();
+  const content = text.replace(regex, '').trim();
   return { thinking, content };
 }
 
@@ -448,16 +504,19 @@ function renderMsg(m, index, total) {
   const isUser = m.role === 'user';
   const isLastAi = !isUser && index === total - 1;
 
-  let bubbleHtml = '';
+  let checkboxHtml = '';
+  if (isBatchMode) {
+    const checked = batchSelected.has(index) ? 'checked' : '';
+    checkboxHtml = `<input type="checkbox" class="batch-checkbox" ${checked} onchange="toggleBatchSelect(${index}, this.checked)">`;
+  }
 
+  let bubbleHtml = '';
   if (!isUser && m.thinking && settings.showThinking) {
-    const len = m.thinking.length;
     bubbleHtml += `<details class="thinking-block">
-      <summary>💭 思维过程 · ${len}字</summary>
+      <summary>💭 思维过程 · ${m.thinking.length}字</summary>
       <div class="thinking-content">${escHtml(m.thinking)}</div>
     </details>`;
   }
-
   bubbleHtml += isUser ? escHtml(m.content) : renderMarkdown(m.content);
 
   let metaParts = [];
@@ -465,39 +524,61 @@ function renderMsg(m, index, total) {
   if (!isUser && settings.showDuration && m.duration) metaParts.push('⏱️ ' + m.duration.toFixed(1) + 's');
   const metaHtml = metaParts.length > 0 ? `<div class="msg-meta">${metaParts.join(' · ')}</div>` : '';
 
-  const regenHtml = (isLastAi && !isStreaming)
-    ? `<div class="msg-actions"><button class="regen-btn" onclick="regenerate()" title="重新生成">🔄 重说</button></div>` : '';
+  let actionsHtml = '';
+  if (!isBatchMode) {
+    if (isUser) {
+      actionsHtml = `
+        <div class="msg-actions">
+          <button class="action-toggle" onclick="toggleActions(this)">•••</button>
+          <div class="action-buttons" style="display:none;">
+            <button class="act-btn" onclick="editMsg(${index})">✏️ 修改</button>
+            <button class="act-btn" onclick="copyMsg(${index})">📋 复制</button>
+            <button class="act-btn act-del" onclick="deleteMsg(${index})">🗑️ 删除</button>
+            <button class="act-btn" onclick="enterBatchMode(${index})">☑️ 多选</button>
+          </div>
+        </div>`;
+    } else {
+      actionsHtml = `
+        <div class="msg-actions">
+          <button class="action-toggle" onclick="toggleActions(this)">•••</button>
+          <div class="action-buttons" style="display:none;">
+            <button class="act-btn" onclick="editMsg(${index})">✏️ 修改</button>
+            <button class="act-btn" onclick="copyMsg(${index})">📋 复制</button>
+            <button class="act-btn act-del" onclick="deleteMsg(${index})">🗑️ 删除</button>
+            ${isLastAi ? '<button class="act-btn act-cont" onclick="continueMsg()">▶️ 续写</button>' : ''}
+            ${isLastAi && !isStreaming ? '<button class="act-btn act-regen" onclick="regenerate()">🔄 重说</button>' : ''}
+            <button class="act-btn" onclick="enterBatchMode(${index})">☑️ 多选</button>
+          </div>
+        </div>`;
+    }
+  }
 
   return `
-    <div class="msg ${isUser ? 'msg-user' : 'msg-ai'}">
+    <div class="msg ${isUser ? 'msg-user' : 'msg-ai'}" id="msg-${index}">
+      ${checkboxHtml}
       <div class="msg-avatar">${isUser ? '👤' : '🥝'}</div>
       <div class="msg-col">
-        <div class="msg-bubble">${bubbleHtml}</div>
+        <div class="msg-bubble" id="bubble-${index}">${bubbleHtml}</div>
         ${metaHtml}
-        ${regenHtml}
+        ${actionsHtml}
       </div>
     </div>`;
 }
 
 function renderMarkdown(text) {
   if (!text) return '';
-  try {
-    const html = marked.parse(text, { breaks: true });
-    return DOMPurify.sanitize(html);
-  } catch(e) { return escHtml(text); }
+  try { return DOMPurify.sanitize(marked.parse(text, { breaks: true })); }
+  catch(e) { return escHtml(text); }
 }
 
 // ============================================================
-// Streaming Display
+// Streaming
 // ============================================================
 function appendTyping() {
   const el = document.getElementById('messages');
   const div = document.createElement('div');
-  div.className = 'msg msg-ai';
-  div.id = 'typing-msg';
-
+  div.className = 'msg msg-ai'; div.id = 'typing-msg';
   const showMeta = settings.showTime || settings.showDuration;
-
   div.innerHTML = `
     <div class="msg-avatar">🥝</div>
     <div class="msg-col">
@@ -506,7 +587,6 @@ function appendTyping() {
     </div>`;
   el.appendChild(div);
   el.scrollTop = el.scrollHeight;
-
   startLiveTimer();
 }
 
@@ -515,38 +595,21 @@ function updateStreamMsg(text, thinking) {
   if (!el) {
     const container = document.getElementById('messages');
     el = document.createElement('div');
-    el.className = 'msg msg-ai';
-    el.id = 'typing-msg';
+    el.className = 'msg msg-ai'; el.id = 'typing-msg';
     const showMeta = settings.showTime || settings.showDuration;
-    el.innerHTML = `
-      <div class="msg-avatar">🥝</div>
-      <div class="msg-col">
-        <div class="msg-bubble"></div>
-        ${showMeta ? '<div class="msg-meta" id="stream-meta"></div>' : ''}
-      </div>`;
+    el.innerHTML = `<div class="msg-avatar">🥝</div><div class="msg-col"><div class="msg-bubble"></div>${showMeta ? '<div class="msg-meta" id="stream-meta"></div>' : ''}</div>`;
     container.appendChild(el);
     startLiveTimer();
   }
-
   const bubble = el.querySelector('.msg-bubble');
   let html = '';
-
   if (thinking && settings.showThinking) {
-    html += `<details class="thinking-block" open>
-      <summary>💭 思维中…</summary>
-      <div class="thinking-content">${escHtml(thinking)}</div>
-    </details>`;
+    html += `<details class="thinking-block" open><summary>💭 思维中…</summary><div class="thinking-content">${escHtml(thinking)}</div></details>`;
   }
-
-  if (text) {
-    html += renderMarkdown(text);
-  } else if (!thinking || !settings.showThinking) {
-    html += `<div class="typing"><span></span><span></span><span></span></div>`;
-  }
-
+  if (text) html += renderMarkdown(text);
+  else if (!thinking || !settings.showThinking) html += `<div class="typing"><span></span><span></span><span></span></div>`;
   bubble.innerHTML = html;
-  const msgs = document.getElementById('messages');
-  msgs.scrollTop = msgs.scrollHeight;
+  document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
 }
 
 function finalizeStreamMsg() {
@@ -556,19 +619,17 @@ function finalizeStreamMsg() {
 }
 
 // ============================================================
-// Send Message
+// Send
 // ============================================================
 async function sendMessage() {
   const input = document.getElementById('msg-input');
   const text = input.value.trim();
   if (!text || isStreaming) return;
-
   const conv = getCurrentConv();
   if (!conv) return;
 
   conv.messages.push({ role: 'user', content: text, time: Date.now() });
-  input.value = '';
-  autoResize(input);
+  input.value = ''; autoResize(input);
   renderMessages(conv.messages);
 
   if (conv.messages.filter(m => m.role === 'user').length === 1) {
@@ -576,7 +637,6 @@ async function sendMessage() {
     document.getElementById('chat-title').textContent = conv.title;
     renderConvList();
   }
-
   await doSend(conv);
 }
 
@@ -586,53 +646,41 @@ async function sendMessage() {
 async function regenerate() {
   const conv = getCurrentConv();
   if (!conv || isStreaming) return;
-
-  while (conv.messages.length > 0 && conv.messages[conv.messages.length - 1].role === 'assistant') {
-    conv.messages.pop();
-  }
-
+  while (conv.messages.length > 0 && conv.messages[conv.messages.length - 1].role === 'assistant') conv.messages.pop();
   saveConversations();
   renderMessages(conv.messages);
   await doSend(conv);
 }
 
 // ============================================================
-// Core Send Logic
+// Core Send
 // ============================================================
 async function doSend(conv) {
   isStreaming = true;
-  document.getElementById('send-btn').disabled = true;
+  abortController = new AbortController();
+  setStopMode();
   appendTyping();
 
-  let aiText = '';
-  let thinkingText = '';
+  let aiText = '', thinkingText = '';
   const startTime = Date.now();
+  let wasStopped = false;
 
   try {
     const timeStr = getBeijingTime();
     const apiMessages = conv.messages.map((m, i, arr) => {
       const msg = { role: m.role, content: m.content };
-      if (m.role === 'user' && i === arr.length - 1) {
-        msg.content = `[当前时间：${timeStr}]\n${m.content}`;
-      }
+      if (m.role === 'user' && i === arr.length - 1) msg.content = `[当前时间：${timeStr}]\n${m.content}`;
       return msg;
     });
 
     const res = await fetch(`${API}/v1/chat/completions`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${TOKEN}` },
-      body: JSON.stringify({
-        model: settings.model,
-        messages: apiMessages,
-        stream: true,
-        conversation_id: conv.id
-      })
+      body: JSON.stringify({ model: settings.model, messages: apiMessages, stream: true, conversation_id: conv.id }),
+      signal: abortController.signal
     });
 
-    if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      throw new Error(errData.error?.message || `HTTP ${res.status}`);
-    }
+    if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error?.message || `HTTP ${res.status}`); }
 
     const reader = res.body.getReader();
     const decoder = new TextDecoder();
@@ -653,58 +701,58 @@ async function doSend(conv) {
           const json = JSON.parse(data);
           const delta = json.choices?.[0]?.delta;
           if (!delta) continue;
-
           const reasoning = delta.reasoning_content || delta.reasoning;
           if (reasoning) thinkingText += reasoning;
           if (delta.content) aiText += delta.content;
 
-          let displayContent = aiText;
-          let displayThinking = thinkingText;
-          if (aiText.includes('<think>')) {
-            const parsed = parseThinking(aiText);
-            displayThinking = (thinkingText ? thinkingText + '\n' : '') + parsed.thinking;
-            displayContent = parsed.content;
+          let dc = aiText, dt = thinkingText;
+          if (aiText.match(/<think>/i)) {
+            const p = parseThinking(aiText);
+            dt = (thinkingText ? thinkingText + '\n' : '') + p.thinking;
+            dc = p.content;
           }
-
-          if (displayContent || displayThinking) {
-            updateStreamMsg(displayContent, displayThinking);
-          }
+          if (dc || dt) updateStreamMsg(dc, dt);
         } catch(e) {}
       }
     }
 
-    if (aiText.includes('<think>')) {
-      const parsed = parseThinking(aiText);
-      if (parsed.thinking) {
-        thinkingText = (thinkingText ? thinkingText + '\n' : '') + parsed.thinking;
-      }
-      aiText = parsed.content;
+    if (aiText.match(/<think>/i)) {
+      const p = parseThinking(aiText);
+      if (p.thinking) thinkingText = (thinkingText ? thinkingText + '\n' : '') + p.thinking;
+      aiText = p.content;
     }
-
   } catch(e) {
-    aiText = `⚠️ 请求失败 (${e.message})`;
-    toast(e.message, false);
+    if (e.name === 'AbortError') {
+      wasStopped = true;
+      // Parse any thinking from partial content
+      if (aiText.match(/<think>/i)) {
+        const p = parseThinking(aiText);
+        if (p.thinking) thinkingText = (thinkingText ? thinkingText + '\n' : '') + p.thinking;
+        aiText = p.content;
+      }
+      if (aiText) aiText += '\n\n*[已停止生成]*';
+    } else {
+      aiText = `⚠️ 请求失败 (${e.message})`;
+      toast(e.message, false);
+    }
   }
 
   const duration = (Date.now() - startTime) / 1000;
-
   if (aiText) {
-    const aiMsg = { role: 'assistant', content: aiText, time: Date.now(), duration: duration };
+    const aiMsg = { role: 'assistant', content: aiText, time: Date.now(), duration };
     if (thinkingText) aiMsg.thinking = thinkingText;
     conv.messages.push(aiMsg);
   }
 
   finalizeStreamMsg();
-  if (!aiText) {
-    const el = document.getElementById('typing-msg');
-    if (el) el.remove();
-  }
+  if (!aiText) { const el = document.getElementById('typing-msg'); if (el) el.remove(); }
 
   isStreaming = false;
-  document.getElementById('send-btn').disabled = false;
+  abortController = null;
+  setSendMode();
   saveConversations();
   renderMessages(conv.messages);
-  updateTitle(conv);
+  if (!wasStopped) updateTitle(conv);
 }
 
 async function updateTitle(conv) {
@@ -716,15 +764,207 @@ async function updateTitle(conv) {
       if (data.title && data.title !== '新对话') {
         conv.title = data.title;
         document.getElementById('chat-title').textContent = conv.title;
-        saveConversations();
-        renderConvList();
+        saveConversations(); renderConvList();
       }
     }
   } catch(e) {}
 }
 
 // ============================================================
-// Input Handling
+// Message Actions
+// ============================================================
+function toggleActions(btn) {
+  const buttons = btn.nextElementSibling;
+  const isOpen = buttons.style.display !== 'none';
+  document.querySelectorAll('.action-buttons').forEach(el => el.style.display = 'none');
+  buttons.style.display = isOpen ? 'none' : 'flex';
+}
+
+function copyMsg(index) {
+  const conv = getCurrentConv();
+  if (!conv) return;
+  const text = conv.messages[index]?.content || '';
+  navigator.clipboard.writeText(text).then(() => toast('已复制', true)).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    toast('已复制', true);
+  });
+}
+
+function deleteMsg(index) {
+  const conv = getCurrentConv();
+  if (!conv) return;
+  if (!confirm('删除这条消息？')) return;
+  conv.messages.splice(index, 1);
+  saveConversations();
+  renderMessages(conv.messages);
+}
+
+function editMsg(index) {
+  const conv = getCurrentConv();
+  if (!conv) return;
+  const bubble = document.getElementById('bubble-' + index);
+  if (!bubble) return;
+  const msg = conv.messages[index];
+  bubble.innerHTML = `
+    <textarea class="edit-textarea" id="edit-ta-${index}">${escHtml(msg.content)}</textarea>
+    <div class="edit-actions">
+      <button class="edit-save" onclick="saveEdit(${index})">✅ 保存</button>
+      <button class="edit-cancel" onclick="cancelEdit()">❌ 取消</button>
+    </div>`;
+  const ta = document.getElementById('edit-ta-' + index);
+  ta.focus();
+  ta.style.height = ta.scrollHeight + 'px';
+}
+
+function saveEdit(index) {
+  const conv = getCurrentConv();
+  if (!conv) return;
+  const ta = document.getElementById('edit-ta-' + index);
+  if (!ta) return;
+  conv.messages[index].content = ta.value;
+  saveConversations();
+  renderMessages(conv.messages);
+  toast('已保存', true);
+}
+
+function cancelEdit() {
+  const conv = getCurrentConv();
+  if (conv) renderMessages(conv.messages);
+}
+
+// ============================================================
+// Continue (续写)
+// ============================================================
+async function continueMsg() {
+  const conv = getCurrentConv();
+  if (!conv || isStreaming) return;
+  const lastAi = conv.messages[conv.messages.length - 1];
+  if (!lastAi || lastAi.role !== 'assistant') return;
+
+  const originalContent = lastAi.content;
+  isStreaming = true;
+  abortController = new AbortController();
+  setStopMode();
+  appendTyping();
+
+  let newText = '';
+  const startTime = Date.now();
+
+  try {
+    const timeStr = getBeijingTime();
+    const apiMessages = conv.messages.map((m, i, arr) => {
+      const msg = { role: m.role, content: m.content };
+      if (m.role === 'user' && i === arr.length - 2) msg.content = `[当前时间：${timeStr}]\n${m.content}`;
+      return msg;
+    });
+    apiMessages.push({ role: 'user', content: '[请从你上一条回复中断的地方继续写，不要重复已有内容，直接续写]' });
+
+    const res = await fetch(`${API}/v1/chat/completions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${TOKEN}` },
+      body: JSON.stringify({ model: settings.model, messages: apiMessages, stream: true, conversation_id: conv.id }),
+      signal: abortController.signal
+    });
+
+    if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error?.message || `HTTP ${res.status}`); }
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || '';
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const data = line.slice(6).trim();
+        if (data === '[DONE]') continue;
+        try {
+          const json = JSON.parse(data);
+          const delta = json.choices?.[0]?.delta?.content;
+          if (delta) { newText += delta; updateStreamMsg(originalContent + newText, ''); }
+        } catch(e) {}
+      }
+    }
+  } catch(e) {
+    if (e.name === 'AbortError') {
+      if (newText) newText += '\n\n*[已停止生成]*';
+    } else {
+      toast('续写失败：' + e.message, false);
+    }
+  }
+
+  if (newText) {
+    const parsed = parseThinking(newText);
+    lastAi.content = originalContent + (parsed.content || newText);
+    lastAi.duration = (Date.now() - startTime) / 1000;
+  }
+
+  finalizeStreamMsg();
+  if (!newText) { const el = document.getElementById('typing-msg'); if (el) el.remove(); }
+  isStreaming = false;
+  abortController = null;
+  setSendMode();
+  saveConversations();
+  renderMessages(conv.messages);
+}
+
+// ============================================================
+// Batch Delete
+// ============================================================
+function enterBatchMode(startIndex) {
+  isBatchMode = true;
+  batchSelected = new Set();
+  if (startIndex !== undefined) batchSelected.add(startIndex);
+  document.getElementById('batch-bar').style.display = 'flex';
+  document.getElementById('input-area').style.display = 'none';
+  updateBatchCount();
+  const conv = getCurrentConv();
+  if (conv) renderMessages(conv.messages);
+}
+
+function exitBatchMode() {
+  isBatchMode = false;
+  batchSelected = new Set();
+  document.getElementById('batch-bar').style.display = 'none';
+  document.getElementById('input-area').style.display = '';
+  const conv = getCurrentConv();
+  if (conv) renderMessages(conv.messages);
+}
+
+function toggleBatchSelect(index, checked) {
+  if (checked) batchSelected.add(index);
+  else batchSelected.delete(index);
+  updateBatchCount();
+}
+
+function updateBatchCount() {
+  const n = batchSelected.size;
+  document.getElementById('batch-count').textContent = `已选 ${n} 条`;
+  document.getElementById('batch-del-btn').disabled = n === 0;
+  document.getElementById('batch-del-btn').textContent = n > 0 ? `🗑️ 删除已选 (${n})` : '🗑️ 删除已选';
+}
+
+function confirmBatchDelete() {
+  const n = batchSelected.size;
+  if (n === 0) return;
+  if (!confirm(`确认删除 ${n} 条消息？`)) return;
+  const conv = getCurrentConv();
+  if (!conv) return;
+  const indices = Array.from(batchSelected).sort((a, b) => b - a);
+  for (const i of indices) conv.messages.splice(i, 1);
+  saveConversations();
+  exitBatchMode();
+  toast(`已删除 ${n} 条`, true);
+}
+
+// ============================================================
+// Input & Sidebar
 // ============================================================
 function handleKey(e) {
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
@@ -735,9 +975,6 @@ function autoResize(el) {
   el.style.height = Math.min(el.scrollHeight, 150) + 'px';
 }
 
-// ============================================================
-// Mobile Sidebar
-// ============================================================
 function toggleSidebar() {
   document.getElementById('sidebar').classList.toggle('open');
   document.getElementById('overlay').classList.toggle('show');
