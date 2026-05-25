@@ -580,7 +580,7 @@ async def get_embedding(text: str) -> Optional[List[float]]:
     except Exception as e:
         print(f"⚠️  Embedding 供应商路由失败，降级到环境变量: {e}")
 
-       if not embed_url:
+    if not embed_url:
         if not EMBEDDING_API_KEY:
             print("⚠️  Embedding API Key 未设置，无法生成 embedding")
             return None
