@@ -598,7 +598,9 @@ async def get_embedding(text: str, embed_url: str = None, embed_key: str = None)
                     "model": EMBEDDING_MODEL,
                     "input": text,
                 },
-            )if resp.status_code == 200:
+            )
+
+            if resp.status_code == 200:
                 data = resp.json()
                 embedding = data["data"][0]["embedding"]
                 return embedding
@@ -609,12 +611,6 @@ async def get_embedding(text: str, embed_url: str = None, embed_key: str = None)
     except Exception as e:
         print(f"⚠️  Embedding生成失败: {e}")
         return None
-
-    except Exception as e:
-        print(f"⚠️  Embedding 生成失败: {e}")
-        return None
-
-
 
 async def get_embeddings_batch(texts: List[str]) -> List[Optional[List[float]]]:
     """
