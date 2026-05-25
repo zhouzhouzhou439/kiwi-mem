@@ -1312,8 +1312,9 @@ async def chat_completions(request: Request):
         else:
             print(f"⚠️ 联网搜索 auto 模式已请求但未配置搜索引擎")
 
-    # v5.8：对话搜索工具（始终可用，让模型能主动搜索过去的对话）
-    if mem_enabled:
+        # v5.8: 对话搜索工具（关键词触发）
+    _SEARCH_KEYWORDS = ["之前", "上次", "以前", "上回", "聊过", "说过", "提过", "提到过", "讨论过", "记得我们"]
+    if mem_enabled and any(kw in user_message for kw in _SEARCH_KEYWORDS):
         openai_tools.append({
             "type": "function",
             "function": {
