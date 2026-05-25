@@ -57,7 +57,9 @@ DEDUP_THRESHOLD = float(os.getenv("DEDUP_THRESHOLD", "0.55"))
 # API 配置（和 main.py 共用环境变量）
 API_KEY = os.getenv("API_KEY", "")
 API_BASE_URL = os.getenv("API_BASE_URL", "https://openrouter.ai/api/v1/chat/completions")
-
+# Embedding 独立配置（优先用专用变量，没有则降级到聊天 API）
+EMBEDDING_API_KEY = os.getenv("OPENAI_API_KEY", "") or os.getenv("EMBEDDING_API_KEY", "") or API_KEY
+EMBEDDING_API_URL = os.getenv("EMBEDDING_API_BASE", "").rstrip("/") + "/embeddings" if os.getenv("EMBEDDING_API_BASE", "") else None
 
 def _get_embedding_url() -> str:
     """从 API_BASE_URL 推导 embedding endpoint"""
@@ -578,19 +580,19 @@ async def get_embedding(text: str) -> Optional[List[float]]:
     except Exception as e:
         print(f"⚠️  Embedding 供应商路由失败，降级到环境变量: {e}")
 
-    if not embed_url:
-        if not API_KEY:
-            print("⚠️  API_KEY 未设置，无法生成 embedding")
+       if not embed_url:
+        if not EMBEDDING_API_KEY:
+            print("⚠️  Embedding API Key 未设置，无法生成 embedding")
             return None
-        embed_url = _get_embedding_url()
-        embed_key = API_KEY
+        embed_url = EMBEDDING_API_URL or _get_embedding_url()
+        embed_key = EMBEDDING_API_KEY
 
     try:
         async with httpx.AsyncClient(timeout=15) as client:
             resp = await client.post(
                 embed_url,
                 headers={
-                    "Authorization": f"Bearer {embed_key}",
+                    "Authorization": f"Bearer {EMBEDDING_API_KEY}",
                     "Content-Type": "application/json",
                 },
                 json={
