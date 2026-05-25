@@ -561,23 +561,36 @@ async def init_tables():
 
 async def get_embedding(text: str) -> Optional[List[float]]:
     """
-    调用 OpenRouter Embedding API 生成向量
-    
-    使用与聊天相同的 API_KEY，接口完全兼容 OpenAI 格式
-    失败时返回 None（触发降级搜索）
+    调用 Embedding API 生成向量
+    优先从供应商数据库路由，降级到环境变量
     """
-    if not API_KEY:
-        print("⚠️  API_KEY 未设置，无法生成 embedding")
-        return None
-    
-    url = _get_embedding_url()
-    
+    embed_url = None
+    embed_key = None
+
+    try:
+        provider_info = await resolve_provider_for_model(EMBEDDING_MODEL)
+        if provider_info:
+            base = provider_info["api_base_url"].rstrip("/")
+            if base.endswith("/chat/completions"):
+                base = base.rsplit("/chat/completions", 1)[0]
+            embed_url = f"{base}/embeddings"
+            embed_key = provider_info["api_key"]
+    except Exception as e:
+        print(f"⚠️  Embedding 供应商路由失败，降级到环境变量: {e}")
+
+    if not embed_url:
+        if not API_KEY:
+            print("⚠️  API_KEY 未设置，无法生成 embedding")
+            return None
+        embed_url = _get_embedding_url()
+        embed_key = API_KEY
+
     try:
         async with httpx.AsyncClient(timeout=15) as client:
             resp = await client.post(
-                url,
+                embed_url,
                 headers={
-                    "Authorization": f"Bearer {API_KEY}",
+                    "Authorization": f"Bearer {embed_key}",
                     "Content-Type": "application/json",
                 },
                 json={
@@ -585,18 +598,19 @@ async def get_embedding(text: str) -> Optional[List[float]]:
                     "input": text,
                 },
             )
-            
+
             if resp.status_code == 200:
                 data = resp.json()
                 embedding = data["data"][0]["embedding"]
                 return embedding
             else:
-                print(f"⚠️  Embedding API 返回 {resp.status_code}: {resp.text[:200]}")
+                print(f"⚠️Embedding API 返回 {resp.status_code}: {resp.text[:200]}")
                 return None
-                
+
     except Exception as e:
         print(f"⚠️  Embedding 生成失败: {e}")
         return None
+
 
 
 async def get_embeddings_batch(texts: List[str]) -> List[Optional[List[float]]]:
