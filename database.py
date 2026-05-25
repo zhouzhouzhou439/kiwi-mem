@@ -615,20 +615,38 @@ async def get_embedding(text: str) -> Optional[List[float]]:
 
 async def get_embeddings_batch(texts: List[str]) -> List[Optional[List[float]]]:
     """
-    批量生成 embedding（OpenRouter 支持批量输入）
-    返回与 texts 等长的列表，失败的位置为 None
+    批量生成 embedding
+    优先从供应商数据库路由，降级到环境变量
     """
-    if not API_KEY or not texts:
+    if not texts:
         return [None] * len(texts)
-    
-    url = _get_embedding_url()
-    
+
+    embed_url = None
+    embed_key = None
+
+    try:
+        provider_info = await resolve_provider_for_model(EMBEDDING_MODEL)
+        if provider_info:
+            base = provider_info["api_base_url"].rstrip("/")
+            if base.endswith("/chat/completions"):
+                base = base.rsplit("/chat/completions", 1)[0]
+            embed_url = f"{base}/embeddings"
+            embed_key = provider_info["api_key"]
+    except Exception as e:
+        print(f"⚠️  批量Embedding供应商路由失败，降级: {e}")
+
+    if not embed_url:
+        if not API_KEY:
+            return [None] * len(texts)
+        embed_url = _get_embedding_url()
+        embed_key = API_KEY
+
     try:
         async with httpx.AsyncClient(timeout=30) as client:
             resp = await client.post(
-                url,
+                embed_url,
                 headers={
-                    "Authorization": f"Bearer {API_KEY}",
+                    "Authorization": f"Bearer {embed_key}",
                     "Content-Type": "application/json",
                 },
                 json={
@@ -636,22 +654,22 @@ async def get_embeddings_batch(texts: List[str]) -> List[Optional[List[float]]]:
                     "input": texts,
                 },
             )
-            
+
             if resp.status_code == 200:
                 data = resp.json()
-                # API 返回的 data 列表按 index 排序
                 results = [None] * len(texts)
                 for item in data["data"]:
                     idx = item["index"]
                     results[idx] = item["embedding"]
                 return results
             else:
-                print(f"⚠️  批量 Embedding API 返回 {resp.status_code}: {resp.text[:200]}")
+                print(f"⚠️  批量Embedding API返回 {resp.status_code}: {resp.text[:200]}")
                 return [None] * len(texts)
-                
+
     except Exception as e:
-        print(f"⚠️  批量 Embedding 生成失败: {e}")
+        print(f"⚠️  批量Embedding生成失败: {e}")
         return [None] * len(texts)
+
 
 
 # ============================================================
