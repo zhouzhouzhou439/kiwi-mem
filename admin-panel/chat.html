@@ -153,6 +153,21 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; m
 
 .toast { position:fixed; top:20px; right:20px; padding:12px 20px; border-radius:8px; color:#fff; z-index:9999; animation:fadeIn 0.3s; font-size:14px; }
 .toast-ok { background:#16a34a; } .toast-err { background:#dc2626; }
+  /* Emoji */
+.emoji-wrap { position:relative; }
+.emoji-btn { background:none; border:none; font-size:22px; cursor:pointer; padding:4px; border-radius:6px; line-height:1; }
+.emoji-btn:hover { background:var(--hover); }
+.emoji-panel { display:none; position:absolute; bottom:calc(100% + 8px); left:0; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:10px; width:320px; max-height:280px; overflow-y:auto; box-shadow:0 8px 30px rgba(0,0,0,0.4); z-index:60; }
+.emoji-panel.open { display:block; }
+.emoji-category { font-size:11px; color:#64748b; margin:8px 0 4px; font-weight:600; }
+.emoji-category:first-child { margin-top:0; }
+.emoji-grid { display:grid; grid-template-columns:repeat(8,1fr); gap:2px; }
+.emoji-grid span { font-size:22px; cursor:pointer; padding:4px; border-radius:6px; text-align:center; line-height:1.3; }
+.emoji-grid span:hover { background:var(--hover); }
+@media (max-width: 768px) {
+  .emoji-panel { width:280px; }
+  .emoji-grid { grid-template-columns:repeat(7,1fr); }
+}
 </style>
 </head>
 <body>
@@ -235,8 +250,12 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; m
 
     <div class="input-area" id="input-area">
       <div class="input-wrap">
-        <textarea id="msg-input" rows="1" placeholder="输入消息…" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
-        <button class="send-btn" id="send-btn" onclick="sendMessage()">
+  <div class="emoji-wrap">
+    <button class="emoji-btn" onclick="toggleEmoji(event)">😊</button>
+    <div class="emoji-panel" id="emoji-panel"></div>
+  </div>
+  <textarea id="msg-input" rows="1" placeholder="输入消息…" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+  <button class="send-btn" id="send-btn" onclick="sendMessage()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
         </button>
       </div>
@@ -997,6 +1016,58 @@ function toast(msg, ok = true) {
   document.body.appendChild(el);
   setTimeout(() => el.remove(), 3500);
 }
+  // ============================================================
+// Emoji Picker
+// ============================================================
+const EMOJIS = {
+  '常用': ['😊','😂','🥺','😭','😍','🥰','😘','😏','😎','🤔','😅','😢','💕','❤️','💖','👍','👋','🤗','😴','😋'],
+  '表情': ['😀','😃','😄','😁','😆','🤣','😇','😉','😌','😙','🥲','😛','😜','😝','🤑','🤭','🤫','🤨','😐','😑','😶','😒','🙄','😬','😮‍💨','😤','😠','😡','🤯','😳','🥵','🥶','😱','😰','😥','😓','🤗','🫣','🫡','🤐','🤮','🫠'],
+  '爱心': ['❤️','🧡','💛','💚','💙','💜','🤎','🖤','🤍','💗','💓','💞','💘','💝','❣️','💔','♥️','💑','👩‍❤️‍👨'],
+  '手势': ['👍','👎','👌','✌️','🤞','🤟','🤘','🤙','👈','👉','👆','👇','☝️','✋','🤚','🖐️','🖖','👋','🤝','🙏','✍️','💪','🫶'],
+  '动物': ['🐱','🐶','🐻','🐼','🐨','🐰','🦊','🐸','🐧','🐥','🦋','🐝','🐌','🐛','🌸','🌺','🌻','🌷','🍀','🌿'],
+  '食物': ['🍎','🍑','🍒','🍓','🥝','🍕','🍔','🍟','🧋','☕','🍰','🎂','🍩','🍫','🍬','🍭','🥤','🍜','🍣','🥟'],
+  '其他': ['⭐','🌙','☀️','🌈','🔥','💫','✨','🎉','🎀','🎁','🎵','🎶','💤','💭','💬','📌','📎','🏠','💻','📱']
+};
+
+function toggleEmoji(e) {
+  e.stopPropagation();
+  const panel = document.getElementById('emoji-panel');
+  if (panel.classList.contains('open')) {
+    panel.classList.remove('open');
+    return;
+  }
+  // Build panel content (only once)
+  if (!panel.innerHTML) {
+    let html = '';
+    for (const [cat, emojis] of Object.entries(EMOJIS)) {
+      html += `<div class="emoji-category">${cat}</div><div class="emoji-grid">`;
+      for (const em of emojis) {
+        html += `<span onclick="insertEmoji('${em}')">${em}</span>`;
+      }
+      html += '</div>';
+    }
+    panel.innerHTML = html;
+  }
+  panel.classList.add('open');
+}
+
+function insertEmoji(em) {
+  const input = document.getElementById('msg-input');
+  const start = input.selectionStart;
+  const end = input.selectionEnd;
+  input.value = input.value.slice(0, start) + em + input.value.slice(end);
+  input.selectionStart = input.selectionEnd = start + em.length;
+  input.focus();
+  autoResize(input);
+}
+
+// Close emoji panel when clicking outside
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.emoji-wrap')) {
+    const panel = document.getElementById('emoji-panel');
+    if (panel) panel.classList.remove('open');
+  }
+});
 </script>
 </body>
 </html>
