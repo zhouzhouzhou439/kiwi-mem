@@ -6,181 +6,408 @@
 <title>Kiwi Chat</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#0f1117">
-<script src="https://cdn.tailwindcss.com"></script>
+<meta name="theme-color" content="#FFF8F0">
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
 <style>
-* { box-sizing: border-box; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 0; overflow: hidden; }
-:root { --bg: #0f1117; --card: #1a1d27; --border: #2a2d3a; --hover: #252836; --input: #1e2130; --kiwi: #22c55e; --kiwi-light: #4ade80; }
+/* ============================================================
+   🎨 Theme System — 3 套主题通过 CSS 变量切换
+   ============================================================ */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ☕ 奶茶暖色 (默认) */
+[data-theme="mocha"] {
+  --bg: #FFF8F0;
+  --bg-secondary: #FFF3E6;
+  --card: #FFFFFF;
+  --card-hover: #FFF5EB;
+  --border: #F0E0D0;
+  --border-light: #F5EBE0;
+  --input-bg: #FFFAF5;
+  --user-bubble: #E8D5C0;
+  --user-bubble-border: #DEC8B0;
+  --user-text: #4A3728;
+  --ai-bubble: #FFFFFF;
+  --ai-bubble-border: #F0E0D0;
+  --ai-text: #3A2E22;
+  --accent: #C8956C;
+  --accent-light: #D4A574;
+  --accent-hover: #B8855C;
+  --text-primary: #3A2E22;
+  --text-secondary: #8B7355;
+  --text-muted: #B8A080;
+  --sidebar-bg: #FFFAF5;
+  --sidebar-active: rgba(200,149,108,0.12);
+  --thinking-bg: rgba(168,133,100,0.06);
+  --thinking-border: rgba(168,133,100,0.15);
+  --thinking-color: #A88564;
+  --shadow: rgba(60,40,20,0.06);
+  --shadow-strong: rgba(60,40,20,0.12);
+  --code-bg: #FFF5EB;
+  --success: #6B9B6B;
+  --danger: #C0685B;
+  --nav-bg: #FFFAF5;
+  --nav-border: #F0E0D0;
+  --overlay-bg: rgba(60,40,20,0.3);
+  --balance-bg: rgba(200,149,108,0.08);
+  --balance-border: rgba(200,149,108,0.2);
+  --scrollbar: #DEC8B0;
+}
+
+/* 🍋 咸柠汽水 */
+[data-theme="lemon"] {
+  --bg: #F5F9E8;
+  --bg-secondary: #EFF5E0;
+  --card: #FFFFFF;
+  --card-hover: #F0F7E5;
+  --border: #D8E8C0;
+  --border-light: #E5F0D5;
+  --input-bg: #FAFCF5;
+  --user-bubble: #C8E0A0;
+  --user-bubble-border: #B8D490;
+  --user-text: #2D3A1E;
+  --ai-bubble: #FFFFFF;
+  --ai-bubble-border: #D8E8C0;
+  --ai-text: #2A3520;
+  --accent: #7BAE5E;
+  --accent-light: #96CAA4;
+  --accent-hover: #6B9E4E;
+  --text-primary: #2A3520;
+  --text-secondary: #6B8550;
+  --text-muted: #9BB580;
+  --sidebar-bg: #F8FCF2;
+  --sidebar-active: rgba(123,174,94,0.12);
+  --thinking-bg: rgba(123,174,94,0.06);
+  --thinking-border: rgba(123,174,94,0.15);
+  --thinking-color: #6B9E4E;
+  --shadow: rgba(40,60,20,0.06);
+  --shadow-strong: rgba(40,60,20,0.12);
+  --code-bg: #F0F7E5;
+  --success: #6B9B6B;
+  --danger: #C0685B;
+  --nav-bg: #F8FCF2;
+  --nav-border: #D8E8C0;
+  --overlay-bg: rgba(40,60,20,0.3);
+  --balance-bg: rgba(123,174,94,0.08);
+  --balance-border: rgba(123,174,94,0.2);
+  --scrollbar: #B8D490;
+}
+
+/* 🌙 凛冬之雪 */
+[data-theme="winter"] {
+  --bg: #1a1a2e;
+  --bg-secondary: #16162a;
+  --card: #222240;
+  --card-hover: #2a2a4a;
+  --border: #333355;
+  --border-light: #2a2a48;
+  --input-bg: #1e1e38;
+  --user-bubble: #3a3a5e;
+  --user-bubble-border: #4a4a6e;
+  --user-text: #e0e0f0;
+  --ai-bubble: #252545;
+  --ai-bubble-border: #333355;
+  --ai-text: #d8d8e8;
+  --accent: #9B8EC4;
+  --accent-light: #B0A0D8;
+  --accent-hover: #8878B4;
+  --text-primary: #e0e0f0;
+  --text-secondary: #8888aa;
+  --text-muted: #666688;
+  --sidebar-bg: #18182e;
+  --sidebar-active: rgba(155,142,196,0.12);
+  --thinking-bg: rgba(155,142,196,0.06);
+  --thinking-border: rgba(155,142,196,0.15);
+  --thinking-color: #9B8EC4;
+  --shadow: rgba(0,0,20,0.2);
+  --shadow-strong: rgba(0,0,20,0.4);
+  --code-bg: #1a1a30;
+  --success: #6B9B8B;
+  --danger: #C06878;
+  --nav-bg: #18182e;
+  --nav-border: #333355;
+  --overlay-bg: rgba(0,0,20,0.5);
+  --balance-bg: rgba(155,142,196,0.08);
+  --balance-border: rgba(155,142,196,0.2);
+  --scrollbar: #4a4a6e;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text-primary);
+  transition: background 0.3s, color 0.3s;
+}
 
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb { background: var(--scrollbar); border-radius: 3px; }
 
+/* ============================================================
+   Login
+   ============================================================ */
 .login-wrap { position:fixed; inset:0; background:var(--bg); z-index:9999; display:flex; align-items:center; justify-content:center; }
-.login-box { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:40px; width:340px; text-align:center; }
-.login-box input { background:var(--input); border:1px solid var(--border); color:#e2e8f0; border-radius:8px; padding:10px 14px; width:100%; outline:none; margin-bottom:16px; text-align:center; }
-.login-box input:focus { border-color: var(--kiwi); }
-.login-box button { background:var(--kiwi); color:#fff; border:none; border-radius:8px; padding:10px; width:100%; cursor:pointer; font-size:15px; }
-.login-box button:hover { background:#16a34a; }
+.login-box { background:var(--card); border:1px solid var(--border); border-radius:20px; padding:40px; width:340px; text-align:center; box-shadow:0 8px 32px var(--shadow-strong); }
+.login-avatar { width:80px; height:80px; border-radius:50%; margin:0 auto 16px; border:3px solid var(--border); object-fit:cover; }
+.login-box h1 { font-size:20px; font-weight:600; margin:0 0 4px; color:var(--text-primary); }
+.login-box .sub { font-size:13px; color:var(--text-muted); margin:0 0 24px; }
+.login-box input { background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:12px; padding:12px 16px; width:100%; outline:none; margin-bottom:16px; text-align:center; font-size:14px; transition:border-color 0.2s; }
+.login-box input:focus { border-color:var(--accent); }
+.login-box button { background:var(--accent); color:#fff; border:none; border-radius:12px; padding:12px; width:100%; cursor:pointer; font-size:15px; font-weight:500; transition:background 0.2s; }
+.login-box button:hover { background:var(--accent-hover); }
 
-.app { display:flex; height:100vh; background:var(--bg); color:#e2e8f0; }
-.sidebar { width:260px; background:var(--card); border-right:1px solid var(--border); display:flex; flex-direction:column; flex-shrink:0; }
+/* ============================================================
+   App Layout
+   ============================================================ */
+.app { display:flex; height:100vh; height:100dvh; background:var(--bg); }
+
+/* ============================================================
+   Sidebar
+   ============================================================ */
+.sidebar { width:280px; background:var(--sidebar-bg); border-right:1px solid var(--border); display:flex; flex-direction:column; flex-shrink:0; }
+.sidebar-header { padding:18px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+.sidebar-header .logo { display:flex; align-items:center; gap:10px; font-weight:600; font-size:16px; }
+.sidebar-header .logo-icon { font-size:22px; }
+.sidebar-header .admin-link { font-size:12px; color:var(--text-muted); text-decoration:none; padding:4px 8px; border-radius:6px; transition:all 0.2s; }
+.sidebar-header .admin-link:hover { background:var(--card-hover); color:var(--text-secondary); }
+
+.sidebar-list { flex:1; overflow-y:auto; padding:8px 10px; }
+.conv-item { padding:11px 14px; border-radius:10px; cursor:pointer; margin-bottom:3px; display:flex; justify-content:space-between; align-items:center; font-size:14px; color:var(--text-secondary); transition:all 0.15s; }
+.conv-item:hover { background:var(--card-hover); color:var(--text-primary); }
+.conv-item.active { background:var(--sidebar-active); color:var(--accent); font-weight:500; }
+.conv-item .del-btn { opacity:0; background:none; border:none; color:var(--danger); cursor:pointer; font-size:16px; padding:2px 6px; border-radius:4px; transition:opacity 0.15s; }
+.conv-item:hover .del-btn { opacity:0.7; }
+.conv-item .del-btn:hover { opacity:1; background:rgba(192,104,91,0.1); }
+
+.new-chat-btn { margin:10px 12px 14px; padding:11px; background:var(--card); border:1.5px dashed var(--border); border-radius:12px; color:var(--text-muted); cursor:pointer; text-align:center; font-size:14px; transition:all 0.2s; }
+.new-chat-btn:hover { border-color:var(--accent); color:var(--accent); border-style:solid; }
+
+/* ============================================================
+   Chat Main Area
+   ============================================================ */
 .chat-main { flex:1; display:flex; flex-direction:column; min-width:0; }
 
-.sidebar-header { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
-.sidebar-list { flex:1; overflow-y:auto; padding:8px; }
-.conv-item { padding:10px 14px; border-radius:8px; cursor:pointer; margin-bottom:2px; display:flex; justify-content:space-between; align-items:center; font-size:14px; color:#94a3b8; }
-.conv-item:hover { background:var(--hover); color:#e2e8f0; }
-.conv-item.active { background:rgba(34,197,94,0.1); color:var(--kiwi-light); }
-.conv-item .del-btn { opacity:0; background:none; border:none; color:#ef4444; cursor:pointer; font-size:16px; padding:2px 6px; border-radius:4px; }
-.conv-item:hover .del-btn { opacity:1; }
-.conv-item .del-btn:hover { background:rgba(239,68,68,0.15); }
-.new-chat-btn { margin:12px; padding:10px; background:var(--input); border:1px solid var(--border); border-radius:8px; color:#94a3b8; cursor:pointer; text-align:center; font-size:14px; }
-.new-chat-btn:hover { border-color:var(--kiwi); color:var(--kiwi-light); }
+/* ---- Header ---- */
+.chat-header { padding:12px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; background:var(--card); }
+.header-left { display:flex; align-items:center; gap:12px; }
+.header-avatar { width:36px; height:36px; border-radius:50%; object-fit:cover; border:2px solid var(--border); }
+.header-info { display:flex; flex-direction:column; }
+.header-name { font-size:15px; font-weight:600; }
+.header-status { font-size:11px; color:var(--success); display:flex; align-items:center; gap:4px; }
+.header-status .dot { width:6px; height:6px; background:var(--success); border-radius:50%; display:inline-block; }
+.header-right { display:flex; align-items:center; gap:8px; }
 
-.chat-header { padding:14px 24px; border-bottom:1px solid var(--border); font-size:15px; font-weight:500; display:flex; align-items:center; justify-content:space-between; }
-.messages { flex:1; overflow-y:auto; padding:20px 24px; }
-.msg { margin-bottom:20px; display:flex; gap:12px; max-width:800px; margin-left:auto; margin-right:auto; width:100%; animation: fadeIn 0.2s ease; }
-@keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+/* ---- Balance Display ---- */
+.balance-bar { display:flex; gap:8px; align-items:center; }
+.balance-item { display:flex; align-items:center; gap:4px; padding:4px 10px; background:var(--balance-bg); border:1px solid var(--balance-border); border-radius:8px; font-size:11px; color:var(--text-secondary); white-space:nowrap; }
+.balance-item .emoji { font-size:13px; }
+.balance-item .amount { font-weight:600; color:var(--accent); }
+
+/* ---- Settings ---- */
+.settings-btn { background:none; border:none; cursor:pointer; font-size:18px; padding:4px 8px; border-radius:8px; line-height:1; color:var(--text-muted); transition:all 0.2s; }
+.settings-btn:hover { background:var(--card-hover); color:var(--text-primary); }
+.settings-wrap { position:relative; }
+.settings-dropdown { display:none; position:absolute; top:calc(100% + 8px); right:0; background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px 16px; min-width:260px; box-shadow:0 8px 30px var(--shadow-strong); z-index:50; }
+.settings-dropdown.open { display:block; }
+.settings-title { font-size:11px; color:var(--text-muted); margin-bottom:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; }
+.settings-item { display:flex; align-items:center; gap:10px; padding:8px 0; cursor:pointer; font-size:13px; color:var(--text-secondary); transition:color 0.15s; }
+.settings-item:hover { color:var(--text-primary); }
+.settings-item input[type="checkbox"] { accent-color:var(--accent); width:16px; height:16px; cursor:pointer; }
+.settings-divider { height:1px; background:var(--border); margin:10px 0; }
+.settings-select { width:100%; background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:8px; padding:8px 10px; font-size:12px; outline:none; cursor:pointer; margin-top:4px; }
+.settings-select:focus { border-color:var(--accent); }
+.settings-select option { background:var(--card); }
+
+/* ============================================================
+   Messages Area
+   ============================================================ */
+.messages { flex:1; overflow-y:auto; padding:20px 24px; padding-bottom:10px; }
+
+.msg { margin-bottom:24px; display:flex; gap:10px; max-width:780px; margin-left:auto; margin-right:auto; width:100%; animation:fadeIn 0.25s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
 .msg-user { justify-content:flex-end; }
-.msg-avatar { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
-.msg-user .msg-avatar { background:rgba(96,165,250,0.15); color:#60a5fa; order:2; }
-.msg-ai .msg-avatar { background:rgba(34,197,94,0.15); color:var(--kiwi-light); }
+.msg-avatar-img { width:34px; height:34px; border-radius:50%; object-fit:cover; flex-shrink:0; border:2px solid var(--border); }
+.msg-user .msg-avatar-img { order:2; }
+
 .msg-col { display:flex; flex-direction:column; min-width:0; max-width:75%; }
 .msg-user .msg-col { align-items:flex-end; }
-.msg-bubble { padding:12px 16px; border-radius:12px; font-size:14.5px; line-height:1.7; }
-.msg-user .msg-bubble { background:rgba(96,165,250,0.1); border:1px solid rgba(96,165,250,0.2); color:#e2e8f0; border-bottom-right-radius:4px; }
-.msg-ai .msg-bubble { background:var(--card); border:1px solid var(--border); color:#e2e8f0; border-bottom-left-radius:4px; }
+
+.msg-name { font-size:12px; color:var(--text-muted); margin-bottom:4px; padding:0 4px; font-weight:500; }
+
+.msg-bubble { padding:12px 16px; border-radius:16px; font-size:14.5px; line-height:1.75; box-shadow:0 1px 3px var(--shadow); transition:all 0.2s; }
+.msg-user .msg-bubble { background:var(--user-bubble); border:1px solid var(--user-bubble-border); color:var(--user-text); border-bottom-right-radius:6px; }
+.msg-ai .msg-bubble { background:var(--ai-bubble); border:1px solid var(--ai-bubble-border); color:var(--ai-text); border-bottom-left-radius:6px; }
+
+/* Markdown inside bubble */
 .msg-bubble p { margin:0 0 8px; } .msg-bubble p:last-child { margin:0; }
-.msg-bubble pre { background:#0d1017; border-radius:8px; padding:12px; overflow-x:auto; margin:8px 0; font-size:13px; }
-.msg-bubble code { font-family:'JetBrains Mono',monospace; font-size:13px; }
-.msg-bubble code:not(pre code) { background:rgba(148,163,184,0.1); padding:2px 6px; border-radius:4px; }
+.msg-bubble pre { background:var(--code-bg); border-radius:10px; padding:12px; overflow-x:auto; margin:8px 0; font-size:13px; border:1px solid var(--border-light); }
+.msg-bubble code { font-family:'JetBrains Mono','Fira Code',monospace; font-size:13px; }
+.msg-bubble code:not(pre code) { background:var(--code-bg); padding:2px 6px; border-radius:5px; }
 .msg-bubble ul, .msg-bubble ol { padding-left:20px; margin:8px 0; }
 .msg-bubble li { margin:4px 0; }
-.msg-bubble blockquote { border-left:3px solid var(--kiwi); padding-left:12px; margin:8px 0; color:#94a3b8; }
+.msg-bubble blockquote { border-left:3px solid var(--accent); padding-left:12px; margin:8px 0; color:var(--text-secondary); }
+.msg-bubble a { color:var(--accent); text-decoration:underline; }
+.msg-bubble strong { color:var(--text-primary); }
 
-.thinking-block { background:rgba(168,85,247,0.06); border:1px solid rgba(168,85,247,0.15); border-radius:8px; margin-bottom:10px; font-size:13px; }
-.thinking-block summary { padding:8px 12px; cursor:pointer; color:#a855f7; list-style:none; display:flex; align-items:center; gap:6px; user-select:none; }
+/* Thinking Block */
+.thinking-block { background:var(--thinking-bg); border:1px solid var(--thinking-border); border-radius:10px; margin-bottom:10px; }
+.thinking-block summary { padding:8px 12px; cursor:pointer; color:var(--thinking-color); list-style:none; display:flex; align-items:center; gap:6px; user-select:none; font-size:13px; }
 .thinking-block summary::-webkit-details-marker { display:none; }
 .thinking-block summary::before { content:'▶'; font-size:10px; transition:transform 0.2s; display:inline-block; }
 .thinking-block[open] summary::before { transform:rotate(90deg); }
-.thinking-content { padding:4px 12px 10px; color:#94a3b8; white-space:pre-wrap; max-height:200px; overflow-y:auto; line-height:1.6; word-break:break-word; }
+.thinking-content { padding:4px 12px 10px; color:var(--text-secondary); white-space:pre-wrap; max-height:200px; overflow-y:auto; line-height:1.6; word-break:break-word; font-size:13px; }
 
-.msg-meta { display:flex; gap:8px; font-size:11px; color:#4b5563; margin-top:4px; padding:0 4px; }
+.msg-meta { display:flex; gap:8px; font-size:11px; color:var(--text-muted); margin-top:4px; padding:0 4px; }
 
+/* Message Actions */
 .msg-actions { display:flex; align-items:center; gap:4px; margin-top:2px; padding:0 2px; }
-.action-toggle { background:none; border:none; cursor:pointer; color:#4b5563; font-size:16px; padding:2px 8px; border-radius:4px; letter-spacing:2px; line-height:1; }
-.action-toggle:hover { background:var(--hover); color:#94a3b8; }
-.action-buttons { display:flex; gap:2px; flex-wrap:wrap; align-items:center; }
-.act-btn { background:var(--input); border:1px solid var(--border); cursor:pointer; font-size:12px; padding:3px 10px; border-radius:6px; color:#94a3b8; transition:all 0.15s; white-space:nowrap; }
-.act-btn:hover { border-color:var(--kiwi); color:var(--kiwi-light); background:rgba(34,197,94,0.06); }
-.act-del:hover { border-color:#ef4444; color:#ef4444; background:rgba(239,68,68,0.06); }
-.act-cont:hover { border-color:#60a5fa; color:#60a5fa; background:rgba(96,165,250,0.06); }
-.act-regen:hover { border-color:#f59e0b; color:#f59e0b; background:rgba(245,158,11,0.06); }
+.action-toggle { background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:16px; padding:2px 8px; border-radius:6px; letter-spacing:2px; line-height:1; transition:all 0.2s; }
+.action-toggle:hover { background:var(--card-hover); color:var(--text-secondary); }
+.action-buttons { display:flex; gap:3px; flex-wrap:wrap; align-items:center; }
+.act-btn { background:var(--card); border:1px solid var(--border); cursor:pointer; font-size:12px; padding:4px 10px; border-radius:8px; color:var(--text-secondary); transition:all 0.15s; white-space:nowrap; }
+.act-btn:hover { border-color:var(--accent); color:var(--accent); background:var(--sidebar-active); }
+.act-del:hover { border-color:var(--danger); color:var(--danger); }
 
-.edit-textarea { width:100%; min-height:80px; background:var(--input); border:1px solid var(--kiwi); color:#e2e8f0; border-radius:8px; padding:10px; font-size:14px; font-family:inherit; resize:vertical; outline:none; line-height:1.6; }
+/* Edit */
+.edit-textarea { width:100%; min-height:80px; background:var(--input-bg); border:1px solid var(--accent); color:var(--text-primary); border-radius:10px; padding:10px; font-size:14px; font-family:inherit; resize:vertical; outline:none; line-height:1.6; }
 .edit-actions { display:flex; gap:8px; margin-top:8px; }
-.edit-save, .edit-cancel { border:none; border-radius:6px; padding:5px 14px; font-size:13px; cursor:pointer; }
-.edit-save { background:var(--kiwi); color:#fff; }
-.edit-save:hover { background:#16a34a; }
-.edit-cancel { background:var(--border); color:#94a3b8; }
-.edit-cancel:hover { background:var(--hover); color:#e2e8f0; }
+.edit-save, .edit-cancel { border:none; border-radius:8px; padding:6px 16px; font-size:13px; cursor:pointer; transition:all 0.2s; }
+.edit-save { background:var(--accent); color:#fff; }
+.edit-save:hover { background:var(--accent-hover); }
+.edit-cancel { background:var(--border); color:var(--text-secondary); }
+.edit-cancel:hover { background:var(--card-hover); }
 
-.batch-checkbox { width:18px; height:18px; accent-color:#ef4444; cursor:pointer; flex-shrink:0; }
-.batch-bar { position:fixed; bottom:0; left:0; right:0; background:var(--card); border-top:1px solid var(--border); padding:12px 24px; display:flex; align-items:center; justify-content:center; gap:16px; z-index:80; animation:fadeIn 0.2s; }
-.batch-bar button { border:none; border-radius:8px; padding:8px 20px; font-size:14px; cursor:pointer; }
-.batch-del-btn { background:#ef4444; color:#fff; }
-.batch-del-btn:hover { background:#dc2626; }
-.batch-del-btn:disabled { background:#4b5563; cursor:not-allowed; }
-.batch-cancel-btn { background:var(--border); color:#94a3b8; }
-.batch-cancel-btn:hover { background:var(--hover); color:#e2e8f0; }
-.batch-count { color:#94a3b8; font-size:14px; }
+/* Batch */
+.batch-checkbox { width:18px; height:18px; accent-color:var(--danger); cursor:pointer; flex-shrink:0; }
+.batch-bar { position:fixed; bottom:60px; left:0; right:0; background:var(--card); border-top:1px solid var(--border); padding:12px 24px; display:flex; align-items:center; justify-content:center; gap:16px; z-index:80; animation:fadeIn 0.2s; box-shadow:0 -2px 10px var(--shadow); }
+.batch-bar button { border:none; border-radius:10px; padding:8px 20px; font-size:14px; cursor:pointer; }
+.batch-del-btn { background:var(--danger); color:#fff; }
+.batch-del-btn:disabled { opacity:0.5; cursor:not-allowed; }
+.batch-cancel-btn { background:var(--border); color:var(--text-secondary); }
 
-.settings-btn { background:none; border:none; cursor:pointer; font-size:18px; padding:4px 8px; border-radius:6px; line-height:1; }
-.settings-btn:hover { background:var(--hover); }
-.settings-wrap { position:relative; }
-.settings-dropdown { display:none; position:absolute; top:calc(100% + 8px); right:0; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px 16px; min-width:240px; box-shadow:0 8px 30px rgba(0,0,0,0.4); z-index:50; }
-.settings-dropdown.open { display:block; }
-.settings-title { font-size:12px; color:#64748b; margin-bottom:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; }
-.settings-item { display:flex; align-items:center; gap:10px; padding:7px 0; cursor:pointer; font-size:13px; color:#94a3b8; transition:color 0.15s; }
-.settings-item:hover { color:#e2e8f0; }
-.settings-item input[type="checkbox"] { accent-color:var(--kiwi); width:15px; height:15px; cursor:pointer; }
-.settings-divider { height:1px; background:var(--border); margin:10px 0; }
-.settings-select { width:100%; background:var(--input); border:1px solid var(--border); color:#e2e8f0; border-radius:6px; padding:7px 10px; font-size:12px; outline:none; cursor:pointer; margin-top:4px; }
-.settings-select:focus { border-color:var(--kiwi); }
-.settings-select option { background:var(--card); color:#e2e8f0; }
-.settings-select optgroup { color:#64748b; font-style:normal; }
-
+/* Typing */
 .typing { display:inline-flex; gap:4px; padding:8px 12px; }
-.typing span { width:6px; height:6px; background:#94a3b8; border-radius:50%; animation:bounce 1.2s infinite; }
+.typing span { width:6px; height:6px; background:var(--text-muted); border-radius:50%; animation:bounce 1.2s infinite; }
 .typing span:nth-child(2) { animation-delay:0.2s; }
 .typing span:nth-child(3) { animation-delay:0.4s; }
 @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
 
-.input-area { padding:16px 24px; border-top:1px solid var(--border); }
-.input-wrap { max-width:800px; margin:0 auto; display:flex; gap:10px; align-items:flex-end; }
-.input-wrap textarea { flex:1; background:var(--input); border:1px solid var(--border); color:#e2e8f0; border-radius:12px; padding:12px 16px; resize:none; outline:none; font-size:14.5px; line-height:1.5; max-height:150px; min-height:46px; font-family:inherit; }
-.input-wrap textarea:focus { border-color:var(--kiwi); }
-.send-btn { background:var(--kiwi); color:#fff; border:none; border-radius:10px; width:42px; height:42px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:background 0.15s; }
-.send-btn:hover { background:#16a34a; }
-.send-btn:disabled { background:var(--border); cursor:not-allowed; }
-.stop-btn { background:#ef4444 !important; }
-.stop-btn:hover { background:#dc2626 !important; }
+/* ============================================================
+   Input Area
+   ============================================================ */
+.input-area { padding:12px 20px 14px; border-top:1px solid var(--border); background:var(--card); }
+.input-wrap { max-width:780px; margin:0 auto; display:flex; gap:8px; align-items:flex-end; }
 
-.menu-btn { display:none; background:none; border:none; color:#94a3b8; font-size:22px; cursor:pointer; padding:4px 8px; }
-@media (max-width: 768px) {
-  .sidebar { position:fixed; left:-280px; top:0; bottom:0; z-index:100; transition:left 0.25s ease; box-shadow:2px 0 20px rgba(0,0,0,0.5); }
-  .sidebar.open { left:0; }
-  .menu-btn { display:block; }
-  .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:99; }
-  .overlay.show { display:block; }
-  .msg-col { max-width:88%; }
-  .messages { padding:16px; }
-  .input-area { padding:12px 16px; }
-  .chat-header { padding:12px 16px; }
-  .settings-dropdown { right:-10px; }
-}
-@supports (padding: env(safe-area-inset-bottom)) {
-  .input-area { padding-bottom: calc(16px + env(safe-area-inset-bottom)); }
-}
+.plus-btn { width:40px; height:40px; border-radius:50%; background:var(--input-bg); border:1.5px solid var(--border); color:var(--text-muted); font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all 0.2s; line-height:1; }
+.plus-btn:hover { border-color:var(--accent); color:var(--accent); }
+.plus-menu { display:none; position:absolute; bottom:calc(100% + 8px); left:0; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:6px; box-shadow:0 4px 20px var(--shadow-strong); z-index:60; min-width:140px; }
+.plus-menu.open { display:block; }
+.plus-menu-item { display:flex; align-items:center; gap:8px; padding:9px 14px; border-radius:8px; cursor:pointer; font-size:13px; color:var(--text-secondary); transition:all 0.15s; white-space:nowrap; }
+.plus-menu-item:hover { background:var(--card-hover); color:var(--text-primary); }
 
-.empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:#4b5563; }
-.empty-state .icon { font-size:48px; margin-bottom:16px; }
+.input-wrap textarea { flex:1; background:var(--input-bg); border:1.5px solid var(--border); color:var(--text-primary); border-radius:14px; padding:10px 16px; resize:none; outline:none; font-size:14.5px; line-height:1.5; max-height:150px; min-height:42px; font-family:inherit; transition:border-color 0.2s; }
+.input-wrap textarea:focus { border-color:var(--accent); }
+.input-wrap textarea::placeholder { color:var(--text-muted); }
+
+.send-btn { background:var(--accent); color:#fff; border:none; border-radius:50%; width:40px; height:40px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all 0.2s; }
+.send-btn:hover { background:var(--accent-hover); transform:scale(1.05); }
+.send-btn:disabled { background:var(--border); cursor:not-allowed; transform:none; }
+.stop-btn { background:var(--danger) !important; }
+.stop-btn:hover { opacity:0.9 !important; }
+
+/* ============================================================
+   Bottom Navigation
+   ============================================================ */
+.bottom-nav { display:none; position:fixed; bottom:0; left:0; right:0; background:var(--nav-bg); border-top:1px solid var(--nav-border); height:56px; z-index:90; }
+.nav-inner { display:flex; justify-content:space-around; align-items:center; height:100%; max-width:500px; margin:0 auto; }
+.nav-item { display:flex; flex-direction:column; align-items:center; gap:2px; cursor:pointer; padding:4px 12px; border-radius:10px; transition:all 0.2s; -webkit-tap-highlight-color:transparent; }
+.nav-item .nav-icon { font-size:20px; line-height:1; }
+.nav-item .nav-label { font-size:10px; color:var(--text-muted); font-weight:500; }
+.nav-item.active .nav-icon { transform:scale(1.1); }
+.nav-item.active .nav-label { color:var(--accent); font-weight:600; }
+.nav-item:active { transform:scale(0.95); }
+
+/* ============================================================
+   Empty State
+   ============================================================ */
+.empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:var(--text-muted); }
+.empty-state .icon { font-size:56px; margin-bottom:16px; }
 .empty-state p { font-size:15px; }
+.empty-state .subtitle { font-size:12px; margin-top:6px; }
 
-.toast { position:fixed; top:20px; right:20px; padding:12px 20px; border-radius:8px; color:#fff; z-index:9999; animation:fadeIn 0.3s; font-size:14px; }
-.toast-ok { background:#16a34a; } .toast-err { background:#dc2626; }
-  /* Emoji */
+/* ============================================================
+   Toast
+   ============================================================ */
+.toast { position:fixed; top:20px; right:20px; padding:12px 20px; border-radius:12px; color:#fff; z-index:9999; animation:fadeIn 0.3s; font-size:14px; box-shadow:0 4px 12px rgba(0,0,0,0.15); }
+.toast-ok { background:var(--success); }
+.toast-err { background:var(--danger); }
+
+/* ============================================================
+   Emoji Panel
+   ============================================================ */
 .emoji-wrap { position:relative; }
-.emoji-btn { background:none; border:none; font-size:22px; cursor:pointer; padding:4px; border-radius:6px; line-height:1; }
-.emoji-btn:hover { background:var(--hover); }
-.emoji-panel { display:none; position:absolute; bottom:calc(100% + 8px); left:0; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:10px; width:320px; max-height:280px; overflow-y:auto; box-shadow:0 8px 30px rgba(0,0,0,0.4); z-index:60; }
+.emoji-btn { background:none; border:none; font-size:20px; cursor:pointer; padding:4px; border-radius:8px; line-height:1; transition:all 0.2s; }
+.emoji-btn:hover { background:var(--card-hover); }
+.emoji-panel { display:none; position:absolute; bottom:calc(100% + 8px); left:0; background:var(--card); border:1px solid var(--border); border-radius:14px; padding:10px; width:320px; max-height:280px; overflow-y:auto; box-shadow:0 8px 30px var(--shadow-strong); z-index:60; }
 .emoji-panel.open { display:block; }
-.emoji-category { font-size:11px; color:#64748b; margin:8px 0 4px; font-weight:600; }
+.emoji-category { font-size:11px; color:var(--text-muted); margin:8px 0 4px; font-weight:600; }
 .emoji-category:first-child { margin-top:0; }
 .emoji-grid { display:grid; grid-template-columns:repeat(8,1fr); gap:2px; }
 .emoji-grid span { font-size:22px; cursor:pointer; padding:4px; border-radius:6px; text-align:center; line-height:1.3; }
-.emoji-grid span:hover { background:var(--hover); }
+.emoji-grid span:hover { background:var(--card-hover); }
+
+/* ============================================================
+   Mobile Responsive
+   ============================================================ */
+.menu-btn { display:none; background:none; border:none; color:var(--text-secondary); font-size:22px; cursor:pointer; padding:4px 8px; line-height:1; }
+.overlay { display:none; position:fixed; inset:0; background:var(--overlay-bg); z-index:99; }
+.overlay.show { display:block; }
+
 @media (max-width: 768px) {
+  .sidebar { position:fixed; left:-300px; top:0; bottom:0; z-index:100; transition:left 0.3s ease; box-shadow:4px 0 20px var(--shadow-strong); width:280px; }
+  .sidebar.open { left:0; }
+  .menu-btn { display:block; }
+  .bottom-nav { display:block; }
+  .msg-col { max-width:85%; }
+  .messages { padding:16px 12px; padding-bottom:10px; }
+  .input-area { padding:10px 12px 12px; }
+  .chat-header { padding:10px 14px; }
+  .balance-bar { display:none; }
+  .balance-bar-mobile { display:flex !important; }
   .emoji-panel { width:280px; }
   .emoji-grid { grid-template-columns:repeat(7,1fr); }
+  .chat-main { padding-bottom:56px; }
+  .settings-dropdown { right:-10px; min-width:240px; }
+  .batch-bar { bottom:56px; }
+}
+
+@media (min-width: 769px) {
+  .bottom-nav { display:none !important; }
+  .balance-bar-mobile { display:none !important; }
+}
+
+@supports (padding: env(safe-area-inset-bottom)) {
+  .bottom-nav { padding-bottom:env(safe-area-inset-bottom); height:calc(56px + env(safe-area-inset-bottom)); }
+  .input-area { padding-bottom:calc(14px + env(safe-area-inset-bottom)); }
+  @media (max-width:768px) {
+    .input-area { padding-bottom:12px; }
+  }
 }
 </style>
 </head>
-<body>
+<body data-theme="mocha">
 
 <!-- ===== Login ===== -->
 <div id="login-wrap" class="login-wrap">
   <div class="login-box">
-    <div style="font-size:42px; margin-bottom:12px;">🥝</div>
-    <h1 style="font-size:20px; font-weight:600; margin:0 0 4px;">Kiwi Chat</h1>
-    <p style="font-size:13px; color:#64748b; margin:0 0 24px;">输入密码开始对话</p>
+    <img class="login-avatar" src="https://i.ibb.co/JW5fsDDK/85ec1d34c11047b453e6e945c4c6bba0.jpg" alt="avatar" onerror="this.style.display='none'">
+    <h1>Kiwi Chat</h1>
+    <p class="sub">输入密码开始对话</p>
     <input type="password" id="login-input" placeholder="ACCESS_TOKEN" onkeydown="if(event.key==='Enter')doLogin()">
     <button onclick="doLogin()">进入</button>
-    <p id="login-err" style="color:#ef4444; font-size:13px; margin-top:12px; display:none;"></p>
+    <p id="login-err" style="color:var(--danger); font-size:13px; margin-top:12px; display:none;"></p>
   </div>
 </div>
 
@@ -188,23 +415,40 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; m
 <div class="app" id="app" style="display:none;">
   <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
+  <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
-      <span style="font-weight:600;">🥝 对话</span>
-      <a href="index.html" style="font-size:12px; color:#64748b; text-decoration:none;" title="管理面板">⚙️ 管理</a>
+      <div class="logo">
+        <span class="logo-icon">🥝</span>
+        <span>对话</span>
+      </div>
+      <a href="index.html" class="admin-link" title="管理面板">⚙️ 管理</a>
     </div>
     <div class="sidebar-list" id="conv-list"></div>
     <div class="new-chat-btn" onclick="newConversation()">+ 新对话</div>
   </aside>
 
+  <!-- Chat Main -->
   <div class="chat-main">
+    <!-- Header -->
     <div class="chat-header">
-      <div style="display:flex; align-items:center; gap:10px;">
+      <div class="header-left">
         <button class="menu-btn" onclick="toggleSidebar()">☰</button>
-        <span id="chat-title">新对话</span>
+        <img class="header-avatar" id="header-avatar" src="https://i.ibb.co/JW5fsDDK/85ec1d34c11047b453e6e945c4c6bba0.jpg" alt="AI" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥝</text></svg>'">
+        <div class="header-info">
+          <span class="header-name" id="header-name">衍</span>
+          <span class="header-status"><span class="dot"></span>在线</span>
+        </div>
       </div>
-      <div style="display:flex; align-items:center; gap:8px;">
-        <div style="font-size:12px; color:#64748b;" id="memory-hint"></div>
+      <div class="header-right">
+        <!-- Balance (PC) -->
+        <div class="balance-bar" id="balance-bar">
+          <div class="balance-item"><span class="emoji">🦔</span><span class="amount" id="bal-ciwei">--</span></div>
+          <div class="balance-item"><span class="emoji">🍖</span><span class="amount" id="bal-dazhou">--</span></div>
+        </div>
+        <!-- Memory hint -->
+        <div style="font-size:12px; color:var(--text-muted);" id="memory-hint"></div>
+        <!-- Settings -->
         <div class="settings-wrap">
           <button class="settings-btn" onclick="toggleSettingsPanel(event)">⚙️</button>
           <div class="settings-dropdown" id="settings-dropdown">
@@ -221,6 +465,13 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; m
               <input type="checkbox" id="set-thinking" onchange="updateSetting('showThinking', this.checked)">
               <span>💭 思维过程</span>
             </label>
+            <div class="settings-divider"></div>
+            <div class="settings-title">主题切换</div>
+            <div style="display:flex; gap:6px; margin-bottom:8px;">
+              <button onclick="setTheme('mocha')" class="theme-btn" data-theme-btn="mocha" style="flex:1;padding:8px 4px;border-radius:10px;border:2px solid var(--border);background:var(--card);cursor:pointer;text-align:center;font-size:12px;transition:all 0.2s;">☕ 奶茶</button>
+              <button onclick="setTheme('lemon')" class="theme-btn" data-theme-btn="lemon" style="flex:1;padding:8px 4px;border-radius:10px;border:2px solid var(--border);background:var(--card);cursor:pointer;text-align:center;font-size:12px;transition:all 0.2s;">🍋 咸柠</button>
+              <button onclick="setTheme('winter')" class="theme-btn" data-theme-btn="winter" style="flex:1;padding:8px 4px;border-radius:10px;border:2px solid var(--border);background:var(--card);cursor:pointer;text-align:center;font-size:12px;transition:all 0.2s;">🌙 凛冬</button>
+            </div>
             <div class="settings-divider"></div>
             <div class="settings-title">模型选择</div>
             <select id="set-model" class="settings-select" onchange="updateSetting('model', this.value)">
@@ -241,21 +492,38 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; m
       </div>
     </div>
 
+    <!-- Balance (Mobile, under header) -->
+    <div class="balance-bar-mobile" id="balance-bar-mobile" style="display:none; padding:6px 14px; gap:6px; justify-content:center; border-bottom:1px solid var(--border); background:var(--bg-secondary);">
+      <div class="balance-item"><span class="emoji">🦔</span><span class="amount" id="bal-ciwei-m">--</span></div>
+      <div class="balance-item"><span class="emoji">🍖</span><span class="amount" id="bal-dazhou-m">--</span></div>
+    </div>
+
+    <!-- Messages -->
     <div class="messages" id="messages">
       <div class="empty-state">
         <div class="icon">🥝</div>
         <p>开始新的对话吧</p>
+        <p class="subtitle" style="color:var(--text-muted);">和衍聊聊天~</p>
       </div>
     </div>
 
+    <!-- Input -->
     <div class="input-area" id="input-area">
       <div class="input-wrap">
-  <div class="emoji-wrap">
-    <button class="emoji-btn" onclick="toggleEmoji(event)">😊</button>
-    <div class="emoji-panel" id="emoji-panel"></div>
-  </div>
-  <textarea id="msg-input" rows="1" placeholder="输入消息…" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
-  <button class="send-btn" id="send-btn" onclick="sendMessage()">
+        <div style="position:relative;">
+          <button class="plus-btn" onclick="togglePlusMenu(event)">+</button>
+          <div class="plus-menu" id="plus-menu">
+            <div class="plus-menu-item" onclick="toast('📷 图片功能开发中~', true)">📷 发送图片</div>
+            <div class="plus-menu-item" onclick="toast('🎤 语音功能开发中~', true)">🎤 语音消息</div>
+            <div class="plus-menu-item" onclick="toast('🎨 生图功能开发中~', true)">🎨 AI生图</div>
+          </div>
+        </div>
+        <div class="emoji-wrap">
+          <button class="emoji-btn" onclick="toggleEmoji(event)">😊</button>
+          <div class="emoji-panel" id="emoji-panel"></div>
+        </div>
+        <textarea id="msg-input" rows="1" placeholder="给衍发消息…" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <button class="send-btn" id="send-btn" onclick="sendMessage()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
         </button>
       </div>
@@ -263,7 +531,33 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; m
   </div>
 </div>
 
-<!-- Batch delete bar -->
+<!-- Bottom Nav (Mobile) -->
+<div class="bottom-nav" id="bottom-nav">
+  <div class="nav-inner">
+    <div class="nav-item active" onclick="switchTab('chat')">
+      <span class="nav-icon">💬</span>
+      <span class="nav-label">聊天</span>
+    </div>
+    <div class="nav-item" onclick="switchTab('data')">
+      <span class="nav-icon">📊</span>
+      <span class="nav-label">数据</span>
+    </div>
+    <div class="nav-item" onclick="switchTab('settings')">
+      <span class="nav-icon">⚙️</span>
+      <span class="nav-label">设置</span>
+    </div>
+    <div class="nav-item" onclick="switchTab('theme')">
+      <span class="nav-icon">🎨</span>
+      <span class="nav-label">外观</span>
+    </div>
+    <div class="nav-item" onclick="switchTab('system')">
+      <span class="nav-icon">🌍</span>
+      <span class="nav-label">系统</span>
+    </div>
+  </div>
+</div>
+
+<!-- Batch bar -->
 <div class="batch-bar" id="batch-bar" style="display:none;">
   <span class="batch-count" id="batch-count">已选 0 条</span>
   <button class="batch-del-btn" id="batch-del-btn" onclick="confirmBatchDelete()" disabled>🗑️ 删除已选</button>
@@ -283,14 +577,39 @@ let conversations = JSON.parse(localStorage.getItem('kiwi_conversations') || '[]
 let currentConvId = null;
 let isStreaming = false;
 let abortController = null;
-
-// Batch delete
 let isBatchMode = false;
 let batchSelected = new Set();
-
-// Live timer
 let liveTimerInterval = null;
 let streamStartTime = null;
+
+// ============================================================
+// Avatar & Name Config (可编辑)
+// ============================================================
+const defaultAvatarConfig = {
+  user: { url: 'https://i.ibb.co/20vxXxgx/9c7c9ce883cc457523b9c77ec3682b7d.jpg', name: '朝生' },
+  ai: { url: 'https://i.ibb.co/JW5fsDDK/85ec1d34c11047b453e6e945c4c6bba0.jpg', name: '衍' }
+};
+let avatarConfig = { ...defaultAvatarConfig, ...JSON.parse(localStorage.getItem('kiwi_avatars') || '{}') };
+function saveAvatarConfig() { localStorage.setItem('kiwi_avatars', JSON.stringify(avatarConfig)); }
+
+// ============================================================
+// Theme
+// ============================================================
+function setTheme(theme) {
+  document.body.setAttribute('data-theme', theme);
+  localStorage.setItem('kiwi_theme', theme);
+  // Update meta theme-color
+  const colors = { mocha:'#FFF8F0', lemon:'#F5F9E8', winter:'#1a1a2e' };
+  document.querySelector('meta[name="theme-color"]').content = colors[theme] || '#FFF8F0';
+  // Highlight active button
+  document.querySelectorAll('.theme-btn').forEach(btn => {
+    btn.style.borderColor = btn.dataset.themeBtn === theme ? 'var(--accent)' : 'var(--border)';
+    btn.style.fontWeight = btn.dataset.themeBtn === theme ? '700' : '400';
+  });
+}
+// Init theme
+const savedTheme = localStorage.getItem('kiwi_theme') || 'mocha';
+document.body.setAttribute('data-theme', savedTheme);
 
 // ============================================================
 // Settings
@@ -299,44 +618,53 @@ const defaultSettings = { showTime: false, showDuration: false, showThinking: fa
 let settings = { ...defaultSettings, ...JSON.parse(localStorage.getItem('kiwi_settings') || '{}') };
 
 function saveSettings() { localStorage.setItem('kiwi_settings', JSON.stringify(settings)); }
-
 function updateSetting(key, value) {
-  settings[key] = value;
-  saveSettings();
-  if (key !== 'model') {
-    const conv = getCurrentConv();
-    if (conv) renderMessages(conv.messages);
-  }
+  settings[key] = value; saveSettings();
+  if (key !== 'model') { const conv = getCurrentConv(); if (conv) renderMessages(conv.messages); }
 }
-
-function toggleSettingsPanel(e) {
-  e.stopPropagation();
-  document.getElementById('settings-dropdown').classList.toggle('open');
-}
-
+function toggleSettingsPanel(e) { e.stopPropagation(); document.getElementById('settings-dropdown').classList.toggle('open'); }
 function initSettingsUI() {
   document.getElementById('set-time').checked = settings.showTime;
   document.getElementById('set-duration').checked = settings.showDuration;
   document.getElementById('set-thinking').checked = settings.showThinking;
-  const modelSelect = document.getElementById('set-model');
-  if (settings.model && !Array.from(modelSelect.options).some(o => o.value === settings.model)) {
-    const opt = document.createElement('option');
-    opt.value = settings.model;
-    opt.textContent = settings.model;
-    modelSelect.appendChild(opt);
+  const sel = document.getElementById('set-model');
+  if (settings.model && !Array.from(sel.options).some(o => o.value === settings.model)) {
+    const opt = document.createElement('option'); opt.value = settings.model; opt.textContent = settings.model; sel.appendChild(opt);
   }
-  modelSelect.value = settings.model;
+  sel.value = settings.model;
+  setTheme(savedTheme);
 }
 
+// Close dropdowns on outside click
 document.addEventListener('click', function(e) {
-  if (!e.target.closest('.settings-wrap')) {
-    const dd = document.getElementById('settings-dropdown');
-    if (dd) dd.classList.remove('open');
-  }
-  if (!e.target.closest('.msg-actions')) {
-    document.querySelectorAll('.action-buttons').forEach(el => el.style.display = 'none');
-  }
+  if (!e.target.closest('.settings-wrap')) document.getElementById('settings-dropdown')?.classList.remove('open');
+  if (!e.target.closest('.msg-actions')) document.querySelectorAll('.action-buttons').forEach(el => el.style.display = 'none');
+  if (!e.target.closest('.emoji-wrap')) document.getElementById('emoji-panel')?.classList.remove('open');
+  if (!e.target.closest('.plus-btn') && !e.target.closest('.plus-menu')) document.getElementById('plus-menu')?.classList.remove('open');
 });
+
+// ============================================================
+// Balance
+// ============================================================
+async function fetchBalance() {
+  try {
+    const res = await fetch(`${API}/admin/credits`, { headers: { 'Authorization': `Bearer ${TOKEN}` } });
+    if (!res.ok) return;
+    const data = await res.json();
+    const providers = data.providers || [];
+    for (const p of providers) {
+      const name = (p.provider_name || '').toLowerCase();
+      const bal = p.balance !== undefined ? '¥' + Number(p.balance).toFixed(2) : '--';
+      if (name.includes('刺猬') || name.includes('ciwei') || name.includes('hedgehog')) {
+        document.getElementById('bal-ciwei').textContent = bal;
+        const m = document.getElementById('bal-ciwei-m'); if (m) m.textContent = bal;
+      } else if (name.includes('大肘') || name.includes('dazhou') || name.includes('elbow')) {
+        document.getElementById('bal-dazhou').textContent = bal;
+        const m = document.getElementById('bal-dazhou-m'); if (m) m.textContent = bal;
+      }
+    }
+  } catch(e) { console.log('Balance fetch failed:', e); }
+}
 
 // ============================================================
 // Login
@@ -346,27 +674,26 @@ async function doLogin() {
   if (!input) return;
   try {
     const res = await fetch(`${API}/admin/config`, { headers: { 'Authorization': `Bearer ${input}`, 'Content-Type': 'application/json' } });
-    if (res.status === 401) {
-      document.getElementById('login-err').textContent = '密码错误';
-      document.getElementById('login-err').style.display = 'block';
-      return;
-    }
-    TOKEN = input;
-    localStorage.setItem('kiwi_chat_token', TOKEN);
-    showApp();
-  } catch(e) {
-    document.getElementById('login-err').textContent = '连接失败：' + e.message;
-    document.getElementById('login-err').style.display = 'block';
-  }
+    if (res.status === 401) { document.getElementById('login-err').textContent = '密码错误'; document.getElementById('login-err').style.display = 'block'; return; }
+    TOKEN = input; localStorage.setItem('kiwi_chat_token', TOKEN); showApp();
+  } catch(e) { document.getElementById('login-err').textContent = '连接失败：' + e.message; document.getElementById('login-err').style.display = 'block'; }
 }
 
 function showApp() {
   document.getElementById('login-wrap').style.display = 'none';
   document.getElementById('app').style.display = 'flex';
+  document.getElementById('bottom-nav').style.display = '';
   initSettingsUI();
+  updateHeaderInfo();
   renderConvList();
-  if (conversations.length === 0) newConversation();
-  else switchConv(conversations[0].id);
+  if (conversations.length === 0) newConversation(); else switchConv(conversations[0].id);
+  fetchBalance();
+  setInterval(fetchBalance, 120000); // Every 2 min
+}
+
+function updateHeaderInfo() {
+  document.getElementById('header-name').textContent = avatarConfig.ai?.name || '衍';
+  document.getElementById('header-avatar').src = avatarConfig.ai?.url || defaultAvatarConfig.ai.url;
 }
 
 (async function() {
@@ -385,20 +712,16 @@ function showApp() {
 function newConversation() {
   const conv = { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), title: '新对话', messages: [], created: Date.now() };
   conversations.unshift(conv);
-  saveConversations();
-  switchConv(conv.id);
-  renderConvList();
+  saveConversations(); switchConv(conv.id); renderConvList();
 }
 
 function switchConv(id) {
   currentConvId = id;
   const conv = conversations.find(c => c.id === id);
   if (!conv) return;
-  document.getElementById('chat-title').textContent = conv.title;
   if (isBatchMode) exitBatchMode();
   renderMessages(conv.messages);
-  renderConvList();
-  closeSidebar();
+  renderConvList(); closeSidebar();
 }
 
 function deleteConv(id, e) {
@@ -406,21 +729,16 @@ function deleteConv(id, e) {
   if (!confirm('删除这个对话？')) return;
   conversations = conversations.filter(c => c.id !== id);
   saveConversations();
-  if (currentConvId === id) {
-    if (conversations.length > 0) switchConv(conversations[0].id);
-    else newConversation();
-  }
+  if (currentConvId === id) { if (conversations.length > 0) switchConv(conversations[0].id); else newConversation(); }
   renderConvList();
 }
 
 function renderConvList() {
-  const list = document.getElementById('conv-list');
-  list.innerHTML = conversations.map(c => `
+  document.getElementById('conv-list').innerHTML = conversations.map(c => `
     <div class="conv-item ${c.id === currentConvId ? 'active' : ''}" onclick="switchConv('${c.id}')">
       <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escHtml(c.title)}</span>
       <button class="del-btn" onclick="deleteConv('${c.id}', event)">×</button>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
 function saveConversations() { localStorage.setItem('kiwi_conversations', JSON.stringify(conversations)); }
@@ -430,80 +748,41 @@ function getCurrentConv() { return conversations.find(c => c.id === currentConvI
 // Time Helpers
 // ============================================================
 function getBeijingTime() {
-  return new Date().toLocaleString('zh-CN', {
-    timeZone: 'Asia/Shanghai', year: 'numeric', month: 'long', day: 'numeric',
-    weekday: 'long', hour: '2-digit', minute: '2-digit'
-  });
+  return new Date().toLocaleString('zh-CN', { timeZone:'Asia/Shanghai', year:'numeric', month:'long', day:'numeric', weekday:'long', hour:'2-digit', minute:'2-digit' });
 }
-
 function formatTime(ts) {
   if (!ts) return '';
-  return new Date(ts).toLocaleTimeString('zh-CN', { timeZone: 'Asia/Shanghai', hour: '2-digit', minute: '2-digit' });
+  return new Date(ts).toLocaleTimeString('zh-CN', { timeZone:'Asia/Shanghai', hour:'2-digit', minute:'2-digit' });
 }
 
 // ============================================================
 // Live Timer
 // ============================================================
-function startLiveTimer() {
-  streamStartTime = Date.now();
-  updateStreamMeta();
-  liveTimerInterval = setInterval(updateStreamMeta, 100);
-}
-
-function stopLiveTimer() {
-  if (liveTimerInterval) { clearInterval(liveTimerInterval); liveTimerInterval = null; }
-}
-
+function startLiveTimer() { streamStartTime = Date.now(); updateStreamMeta(); liveTimerInterval = setInterval(updateStreamMeta, 100); }
+function stopLiveTimer() { if (liveTimerInterval) { clearInterval(liveTimerInterval); liveTimerInterval = null; } }
 function updateStreamMeta() {
-  const metaEl = document.getElementById('stream-meta');
-  if (!metaEl) return;
+  const el = document.getElementById('stream-meta'); if (!el) return;
   const parts = [];
   if (settings.showTime) parts.push(formatTime(streamStartTime));
   if (settings.showDuration) parts.push('⏱️ ' + ((Date.now() - streamStartTime) / 1000).toFixed(1) + 's');
-  metaEl.textContent = parts.join(' · ');
+  el.textContent = parts.join(' · ');
 }
 
 // ============================================================
 // Send Button State
 // ============================================================
-function setSendMode() {
-  const btn = document.getElementById('send-btn');
-  btn.innerHTML = SEND_ICON;
-  btn.classList.remove('stop-btn');
-  btn.disabled = false;
-  btn.onclick = sendMessage;
-}
-
-function setStopMode() {
-  const btn = document.getElementById('send-btn');
-  btn.innerHTML = STOP_ICON;
-  btn.classList.add('stop-btn');
-  btn.disabled = false;
-  btn.onclick = stopGeneration;
-}
-
-function stopGeneration() {
-  if (abortController) {
-    abortController.abort();
-    abortController = null;
-    toast('已停止生成', true);
-  }
-}
+function setSendMode() { const b = document.getElementById('send-btn'); b.innerHTML = SEND_ICON; b.classList.remove('stop-btn'); b.disabled = false; b.onclick = sendMessage; }
+function setStopMode() { const b = document.getElementById('send-btn'); b.innerHTML = STOP_ICON; b.classList.add('stop-btn'); b.disabled = false; b.onclick = stopGeneration; }
+function stopGeneration() { if (abortController) { abortController.abort(); abortController = null; toast('已停止生成', true); } }
 
 // ============================================================
-// Thinking Parser (case-insensitive)
+// Thinking Parser
 // ============================================================
 function parseThinking(text) {
   const regex = /<think>([\s\S]*?)<\/think>/i;
   const match = text.match(regex);
-  if (!match) {
-    const openMatch = text.match(/<think>([\s\S]*?)$/i);
-    if (openMatch) return { thinking: openMatch[1].trim(), content: '' };
-    return { thinking: '', content: text };
-  }
-  const thinking = match[1].trim();
-  const content = text.replace(regex, '').trim();
-  return { thinking, content };
+  if (!match) { const o = text.match(/<think>([\s\S]*?)$/i); if (o) return { thinking: o[1].trim(), content: '' }; return { thinking: '', content: text }; }
+  return { thinking: match[1].trim(), content: text.replace(regex, '').trim() };
 }
 
 // ============================================================
@@ -512,7 +791,8 @@ function parseThinking(text) {
 function renderMessages(messages) {
   const el = document.getElementById('messages');
   if (!messages || messages.length === 0) {
-    el.innerHTML = '<div class="empty-state"><div class="icon">🥝</div><p>开始新的对话吧</p></div>';
+    const aiName = avatarConfig.ai?.name || '衍';
+    el.innerHTML = `<div class="empty-state"><div class="icon">🥝</div><p>开始新的对话吧</p><p class="subtitle">和${escHtml(aiName)}聊聊天~</p></div>`;
     return;
   }
   el.innerHTML = messages.map((m, i) => renderMsg(m, i, messages.length)).join('');
@@ -522,19 +802,14 @@ function renderMessages(messages) {
 function renderMsg(m, index, total) {
   const isUser = m.role === 'user';
   const isLastAi = !isUser && index === total - 1;
+  const avatar = isUser ? (avatarConfig.user?.url || defaultAvatarConfig.user.url) : (avatarConfig.ai?.url || defaultAvatarConfig.ai.url);
+  const name = isUser ? (avatarConfig.user?.name || '朝生') : (avatarConfig.ai?.name || '衍');
 
-  let checkboxHtml = '';
-  if (isBatchMode) {
-    const checked = batchSelected.has(index) ? 'checked' : '';
-    checkboxHtml = `<input type="checkbox" class="batch-checkbox" ${checked} onchange="toggleBatchSelect(${index}, this.checked)">`;
-  }
+  let checkboxHtml = isBatchMode ? `<input type="checkbox" class="batch-checkbox" ${batchSelected.has(index)?'checked':''} onchange="toggleBatchSelect(${index}, this.checked)">` : '';
 
   let bubbleHtml = '';
   if (!isUser && m.thinking && settings.showThinking) {
-    bubbleHtml += `<details class="thinking-block">
-      <summary>💭 思维过程 · ${m.thinking.length}字</summary>
-      <div class="thinking-content">${escHtml(m.thinking)}</div>
-    </details>`;
+    bubbleHtml += `<details class="thinking-block"><summary>💭 思维过程 · ${m.thinking.length}字</summary><div class="thinking-content">${escHtml(m.thinking)}</div></details>`;
   }
   bubbleHtml += isUser ? escHtml(m.content) : renderMarkdown(m.content);
 
@@ -545,43 +820,20 @@ function renderMsg(m, index, total) {
 
   let actionsHtml = '';
   if (!isBatchMode) {
-    if (isUser) {
-      actionsHtml = `
-        <div class="msg-actions">
-          <button class="action-toggle" onclick="toggleActions(this)">•••</button>
-          <div class="action-buttons" style="display:none;">
-            <button class="act-btn" onclick="editMsg(${index})">✏️ 修改</button>
-            <button class="act-btn" onclick="copyMsg(${index})">📋 复制</button>
-            <button class="act-btn act-del" onclick="deleteMsg(${index})">🗑️ 删除</button>
-            <button class="act-btn" onclick="enterBatchMode(${index})">☑️ 多选</button>
-          </div>
-        </div>`;
-    } else {
-      actionsHtml = `
-        <div class="msg-actions">
-          <button class="action-toggle" onclick="toggleActions(this)">•••</button>
-          <div class="action-buttons" style="display:none;">
-            <button class="act-btn" onclick="editMsg(${index})">✏️ 修改</button>
-            <button class="act-btn" onclick="copyMsg(${index})">📋 复制</button>
-            <button class="act-btn act-del" onclick="deleteMsg(${index})">🗑️ 删除</button>
-            ${isLastAi ? '<button class="act-btn act-cont" onclick="continueMsg()">▶️ 续写</button>' : ''}
-            ${isLastAi && !isStreaming ? '<button class="act-btn act-regen" onclick="regenerate()">🔄 重说</button>' : ''}
-            <button class="act-btn" onclick="enterBatchMode(${index})">☑️ 多选</button>
-          </div>
-        </div>`;
-    }
+    const extraBtns = isLastAi ? `<button class="act-btn" onclick="continueMsg()">▶️ 续写</button>${!isStreaming ? '<button class="act-btn" onclick="regenerate()">🔄 重说</button>' : ''}` : '';
+    actionsHtml = `<div class="msg-actions"><button class="action-toggle" onclick="toggleActions(this)">•••</button><div class="action-buttons" style="display:none;"><button class="act-btn" onclick="editMsg(${index})">✏️ 修改</button><button class="act-btn" onclick="copyMsg(${index})">📋 复制</button><button class="act-btn act-del" onclick="deleteMsg(${index})">🗑️ 删除</button>${extraBtns}<button class="act-btn" onclick="enterBatchMode(${index})">☑️ 多选</button></div></div>`;
   }
 
-  return `
-    <div class="msg ${isUser ? 'msg-user' : 'msg-ai'}" id="msg-${index}">
-      ${checkboxHtml}
-      <div class="msg-avatar">${isUser ? '👤' : '🥝'}</div>
-      <div class="msg-col">
-        <div class="msg-bubble" id="bubble-${index}">${bubbleHtml}</div>
-        ${metaHtml}
-        ${actionsHtml}
-      </div>
-    </div>`;
+  return `<div class="msg ${isUser ? 'msg-user' : 'msg-ai'}" id="msg-${index}">
+    ${checkboxHtml}
+    <img class="msg-avatar-img" src="${avatar}" alt="${escHtml(name)}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>${isUser?'👤':'🥝'}</text></svg>'">
+    <div class="msg-col">
+      <div class="msg-name">${escHtml(name)}</div>
+      <div class="msg-bubble" id="bubble-${index}">${bubbleHtml}</div>
+      ${metaHtml}
+      ${actionsHtml}
+    </div>
+  </div>`;
 }
 
 function renderMarkdown(text) {
@@ -595,17 +847,13 @@ function renderMarkdown(text) {
 // ============================================================
 function appendTyping() {
   const el = document.getElementById('messages');
+  const aiAvatar = avatarConfig.ai?.url || defaultAvatarConfig.ai.url;
+  const aiName = avatarConfig.ai?.name || '衍';
+  const showMeta = settings.showTime || settings.showDuration;
   const div = document.createElement('div');
   div.className = 'msg msg-ai'; div.id = 'typing-msg';
-  const showMeta = settings.showTime || settings.showDuration;
-  div.innerHTML = `
-    <div class="msg-avatar">🥝</div>
-    <div class="msg-col">
-      <div class="msg-bubble"><div class="typing"><span></span><span></span><span></span></div></div>
-      ${showMeta ? '<div class="msg-meta" id="stream-meta"></div>' : ''}
-    </div>`;
-  el.appendChild(div);
-  el.scrollTop = el.scrollHeight;
+  div.innerHTML = `<img class="msg-avatar-img" src="${aiAvatar}" alt="${escHtml(aiName)}"><div class="msg-col"><div class="msg-name">${escHtml(aiName)}</div><div class="msg-bubble"><div class="typing"><span></span><span></span><span></span></div></div>${showMeta ? '<div class="msg-meta" id="stream-meta"></div>' : ''}</div>`;
+  el.appendChild(div); el.scrollTop = el.scrollHeight;
   startLiveTimer();
 }
 
@@ -613,29 +861,24 @@ function updateStreamMsg(text, thinking) {
   let el = document.getElementById('typing-msg');
   if (!el) {
     const container = document.getElementById('messages');
+    const aiAvatar = avatarConfig.ai?.url || defaultAvatarConfig.ai.url;
+    const aiName = avatarConfig.ai?.name || '衍';
+    const showMeta = settings.showTime || settings.showDuration;
     el = document.createElement('div');
     el.className = 'msg msg-ai'; el.id = 'typing-msg';
-    const showMeta = settings.showTime || settings.showDuration;
-    el.innerHTML = `<div class="msg-avatar">🥝</div><div class="msg-col"><div class="msg-bubble"></div>${showMeta ? '<div class="msg-meta" id="stream-meta"></div>' : ''}</div>`;
-    container.appendChild(el);
-    startLiveTimer();
+    el.innerHTML = `<img class="msg-avatar-img" src="${aiAvatar}" alt="${escHtml(aiName)}"><div class="msg-col"><div class="msg-name">${escHtml(aiName)}</div><div class="msg-bubble"></div>${showMeta ? '<div class="msg-meta" id="stream-meta"></div>' : ''}</div>`;
+    container.appendChild(el); startLiveTimer();
   }
   const bubble = el.querySelector('.msg-bubble');
   let html = '';
-  if (thinking && settings.showThinking) {
-    html += `<details class="thinking-block" open><summary>💭 思维中…</summary><div class="thinking-content">${escHtml(thinking)}</div></details>`;
-  }
+  if (thinking && settings.showThinking) html += `<details class="thinking-block" open><summary>💭 思维中…</summary><div class="thinking-content">${escHtml(thinking)}</div></details>`;
   if (text) html += renderMarkdown(text);
   else if (!thinking || !settings.showThinking) html += `<div class="typing"><span></span><span></span><span></span></div>`;
   bubble.innerHTML = html;
   document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
 }
 
-function finalizeStreamMsg() {
-  stopLiveTimer();
-  const el = document.getElementById('typing-msg');
-  if (el) el.removeAttribute('id');
-}
+function finalizeStreamMsg() { stopLiveTimer(); const el = document.getElementById('typing-msg'); if (el) el.removeAttribute('id'); }
 
 // ============================================================
 // Send
@@ -644,46 +887,26 @@ async function sendMessage() {
   const input = document.getElementById('msg-input');
   const text = input.value.trim();
   if (!text || isStreaming) return;
-  const conv = getCurrentConv();
-  if (!conv) return;
-
+  const conv = getCurrentConv(); if (!conv) return;
   conv.messages.push({ role: 'user', content: text, time: Date.now() });
   input.value = ''; autoResize(input);
   renderMessages(conv.messages);
-
   if (conv.messages.filter(m => m.role === 'user').length === 1) {
     conv.title = text.slice(0, 30) + (text.length > 30 ? '…' : '');
-    document.getElementById('chat-title').textContent = conv.title;
     renderConvList();
   }
   await doSend(conv);
 }
 
-// ============================================================
-// Regenerate
-// ============================================================
 async function regenerate() {
-  const conv = getCurrentConv();
-  if (!conv || isStreaming) return;
+  const conv = getCurrentConv(); if (!conv || isStreaming) return;
   while (conv.messages.length > 0 && conv.messages[conv.messages.length - 1].role === 'assistant') conv.messages.pop();
-  saveConversations();
-  renderMessages(conv.messages);
-  await doSend(conv);
+  saveConversations(); renderMessages(conv.messages); await doSend(conv);
 }
 
-// ============================================================
-// Core Send
-// ============================================================
 async function doSend(conv) {
-  isStreaming = true;
-  abortController = new AbortController();
-  setStopMode();
-  appendTyping();
-
-  let aiText = '', thinkingText = '';
-  const startTime = Date.now();
-  let wasStopped = false;
-
+  isStreaming = true; abortController = new AbortController(); setStopMode(); appendTyping();
+  let aiText = '', thinkingText = ''; const startTime = Date.now(); let wasStopped = false;
   try {
     const timeStr = getBeijingTime();
     const apiMessages = conv.messages.map((m, i, arr) => {
@@ -691,383 +914,131 @@ async function doSend(conv) {
       if (m.role === 'user' && i === arr.length - 1) msg.content = `[当前时间：${timeStr}]\n${m.content}`;
       return msg;
     });
-
     const res = await fetch(`${API}/v1/chat/completions`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${TOKEN}` },
-      body: JSON.stringify({ model: settings.model, messages: apiMessages, stream: true, conversation_id: conv.id }),
-      signal: abortController.signal
+      method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${TOKEN}`},
+      body:JSON.stringify({model:settings.model,messages:apiMessages,stream:true,conversation_id:conv.id}),
+      signal:abortController.signal
     });
-
-    if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error?.message || `HTTP ${res.status}`); }
-
-    const reader = res.body.getReader();
-    const decoder = new TextDecoder();
-    let buffer = '';
-
+    if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(e.error?.message || `HTTP ${res.status}`); }
+    const reader = res.body.getReader(); const decoder = new TextDecoder(); let buffer = '';
     while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
+      const { done, value } = await reader.read(); if (done) break;
       buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split('\n');
-      buffer = lines.pop() || '';
-
+      const lines = buffer.split('\n'); buffer = lines.pop() || '';
       for (const line of lines) {
-        if (!line.startsWith('data: ')) continue;
-        const data = line.slice(6).trim();
-        if (data === '[DONE]') continue;
+        if (!line.startsWith('data: ')) continue; const data = line.slice(6).trim(); if (data === '[DONE]') continue;
         try {
-          const json = JSON.parse(data);
-          const delta = json.choices?.[0]?.delta;
-          if (!delta) continue;
+          const json = JSON.parse(data); const delta = json.choices?.[0]?.delta; if (!delta) continue;
           const reasoning = delta.reasoning_content || delta.reasoning;
           if (reasoning) thinkingText += reasoning;
           if (delta.content) aiText += delta.content;
-
           let dc = aiText, dt = thinkingText;
-          if (aiText.match(/<think>/i)) {
-            const p = parseThinking(aiText);
-            dt = (thinkingText ? thinkingText + '\n' : '') + p.thinking;
-            dc = p.content;
-          }
+          if (aiText.match(/<think>/i)) { const p = parseThinking(aiText); dt = (thinkingText ? thinkingText + '\n' : '') + p.thinking; dc = p.content; }
           if (dc || dt) updateStreamMsg(dc, dt);
         } catch(e) {}
       }
     }
-
-    if (aiText.match(/<think>/i)) {
-      const p = parseThinking(aiText);
-      if (p.thinking) thinkingText = (thinkingText ? thinkingText + '\n' : '') + p.thinking;
-      aiText = p.content;
-    }
+    if (aiText.match(/<think>/i)) { const p = parseThinking(aiText); if (p.thinking) thinkingText = (thinkingText ? thinkingText + '\n' : '') + p.thinking; aiText = p.content; }
   } catch(e) {
-    if (e.name === 'AbortError') {
-      wasStopped = true;
-      // Parse any thinking from partial content
-      if (aiText.match(/<think>/i)) {
-        const p = parseThinking(aiText);
-        if (p.thinking) thinkingText = (thinkingText ? thinkingText + '\n' : '') + p.thinking;
-        aiText = p.content;
-      }
-      if (aiText) aiText += '\n\n*[已停止生成]*';
-    } else {
-      aiText = `⚠️ 请求失败 (${e.message})`;
-      toast(e.message, false);
-    }
+    if (e.name === 'AbortError') { wasStopped = true; if (aiText.match(/<think>/i)) { const p = parseThinking(aiText); if (p.thinking) thinkingText = (thinkingText ? thinkingText+'\n':'') + p.thinking; aiText = p.content; } if (aiText) aiText += '\n\n*[已停止生成]*'; }
+    else { aiText = `⚠️ 请求失败 (${e.message})`; toast(e.message, false); }
   }
-
   const duration = (Date.now() - startTime) / 1000;
-  if (aiText) {
-    const aiMsg = { role: 'assistant', content: aiText, time: Date.now(), duration };
-    if (thinkingText) aiMsg.thinking = thinkingText;
-    conv.messages.push(aiMsg);
-  }
-
+  if (aiText) { const aiMsg = { role:'assistant', content:aiText, time:Date.now(), duration }; if (thinkingText) aiMsg.thinking = thinkingText; conv.messages.push(aiMsg); }
   finalizeStreamMsg();
   if (!aiText) { const el = document.getElementById('typing-msg'); if (el) el.remove(); }
-
-  isStreaming = false;
-  abortController = null;
-  setSendMode();
-  saveConversations();
-  renderMessages(conv.messages);
+  isStreaming = false; abortController = null; setSendMode(); saveConversations(); renderMessages(conv.messages);
   if (!wasStopped) updateTitle(conv);
 }
 
 async function updateTitle(conv) {
   if (conv.messages.filter(m => m.role === 'user').length !== 1) return;
   try {
-    const res = await fetch(`${API}/conversations/${conv.id}`, { headers: { 'Authorization': `Bearer ${TOKEN}` } });
-    if (res.ok) {
-      const data = await res.json();
-      if (data.title && data.title !== '新对话') {
-        conv.title = data.title;
-        document.getElementById('chat-title').textContent = conv.title;
-        saveConversations(); renderConvList();
-      }
-    }
+    const res = await fetch(`${API}/conversations/${conv.id}`, { headers:{'Authorization':`Bearer ${TOKEN}`} });
+    if (res.ok) { const data = await res.json(); if (data.title && data.title !== '新对话') { conv.title = data.title; saveConversations(); renderConvList(); } }
   } catch(e) {}
 }
 
 // ============================================================
 // Message Actions
 // ============================================================
-function toggleActions(btn) {
-  const buttons = btn.nextElementSibling;
-  const isOpen = buttons.style.display !== 'none';
-  document.querySelectorAll('.action-buttons').forEach(el => el.style.display = 'none');
-  buttons.style.display = isOpen ? 'none' : 'flex';
-}
+function toggleActions(btn) { const b = btn.nextElementSibling; const isOpen = b.style.display !== 'none'; document.querySelectorAll('.action-buttons').forEach(el => el.style.display = 'none'); b.style.display = isOpen ? 'none' : 'flex'; }
+function copyMsg(index) { const conv = getCurrentConv(); if (!conv) return; const text = conv.messages[index]?.content || ''; navigator.clipboard.writeText(text).then(() => toast('已复制',true)).catch(() => { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); toast('已复制',true); }); }
+function deleteMsg(index) { const conv = getCurrentConv(); if (!conv || !confirm('删除这条消息？')) return; conv.messages.splice(index, 1); saveConversations(); renderMessages(conv.messages); }
+function editMsg(index) { const conv = getCurrentConv(); if (!conv) return; const bubble = document.getElementById('bubble-'+index); if (!bubble) return; const msg = conv.messages[index]; bubble.innerHTML = `<textarea class="edit-textarea" id="edit-ta-${index}">${escHtml(msg.content)}</textarea><div class="edit-actions"><button class="edit-save" onclick="saveEdit(${index})">✅ 保存</button><button class="edit-cancel" onclick="cancelEdit()">❌ 取消</button></div>`; const ta = document.getElementById('edit-ta-'+index); ta.focus(); ta.style.height = ta.scrollHeight + 'px'; }
+function saveEdit(index) { const conv = getCurrentConv(); if (!conv) return; const ta = document.getElementById('edit-ta-'+index); if (!ta) return; conv.messages[index].content = ta.value; saveConversations(); renderMessages(conv.messages); toast('已保存',true); }
+function cancelEdit() { const conv = getCurrentConv(); if (conv) renderMessages(conv.messages); }
 
-function copyMsg(index) {
-  const conv = getCurrentConv();
-  if (!conv) return;
-  const text = conv.messages[index]?.content || '';
-  navigator.clipboard.writeText(text).then(() => toast('已复制', true)).catch(() => {
-    const ta = document.createElement('textarea');
-    ta.value = text; document.body.appendChild(ta); ta.select();
-    document.execCommand('copy'); document.body.removeChild(ta);
-    toast('已复制', true);
-  });
-}
-
-function deleteMsg(index) {
-  const conv = getCurrentConv();
-  if (!conv) return;
-  if (!confirm('删除这条消息？')) return;
-  conv.messages.splice(index, 1);
-  saveConversations();
-  renderMessages(conv.messages);
-}
-
-function editMsg(index) {
-  const conv = getCurrentConv();
-  if (!conv) return;
-  const bubble = document.getElementById('bubble-' + index);
-  if (!bubble) return;
-  const msg = conv.messages[index];
-  bubble.innerHTML = `
-    <textarea class="edit-textarea" id="edit-ta-${index}">${escHtml(msg.content)}</textarea>
-    <div class="edit-actions">
-      <button class="edit-save" onclick="saveEdit(${index})">✅ 保存</button>
-      <button class="edit-cancel" onclick="cancelEdit()">❌ 取消</button>
-    </div>`;
-  const ta = document.getElementById('edit-ta-' + index);
-  ta.focus();
-  ta.style.height = ta.scrollHeight + 'px';
-}
-
-function saveEdit(index) {
-  const conv = getCurrentConv();
-  if (!conv) return;
-  const ta = document.getElementById('edit-ta-' + index);
-  if (!ta) return;
-  conv.messages[index].content = ta.value;
-  saveConversations();
-  renderMessages(conv.messages);
-  toast('已保存', true);
-}
-
-function cancelEdit() {
-  const conv = getCurrentConv();
-  if (conv) renderMessages(conv.messages);
-}
-
-// ============================================================
-// Continue (续写)
-// ============================================================
+// Continue
 async function continueMsg() {
-  const conv = getCurrentConv();
-  if (!conv || isStreaming) return;
-  const lastAi = conv.messages[conv.messages.length - 1];
-  if (!lastAi || lastAi.role !== 'assistant') return;
-
-  const originalContent = lastAi.content;
-  isStreaming = true;
-  abortController = new AbortController();
-  setStopMode();
-  appendTyping();
-
-  let newText = '';
-  const startTime = Date.now();
-
+  const conv = getCurrentConv(); if (!conv || isStreaming) return;
+  const lastAi = conv.messages[conv.messages.length - 1]; if (!lastAi || lastAi.role !== 'assistant') return;
+  const originalContent = lastAi.content; isStreaming = true; abortController = new AbortController(); setStopMode(); appendTyping();
+  let newText = ''; const startTime = Date.now();
   try {
     const timeStr = getBeijingTime();
-    const apiMessages = conv.messages.map((m, i, arr) => {
-      const msg = { role: m.role, content: m.content };
-      if (m.role === 'user' && i === arr.length - 2) msg.content = `[当前时间：${timeStr}]\n${m.content}`;
-      return msg;
-    });
-    apiMessages.push({ role: 'user', content: '[请从你上一条回复中断的地方继续写，不要重复已有内容，直接续写]' });
-
-    const res = await fetch(`${API}/v1/chat/completions`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${TOKEN}` },
-      body: JSON.stringify({ model: settings.model, messages: apiMessages, stream: true, conversation_id: conv.id }),
-      signal: abortController.signal
-    });
-
-    if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error?.message || `HTTP ${res.status}`); }
-
-    const reader = res.body.getReader();
-    const decoder = new TextDecoder();
-    let buffer = '';
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split('\n');
-      buffer = lines.pop() || '';
-      for (const line of lines) {
-        if (!line.startsWith('data: ')) continue;
-        const data = line.slice(6).trim();
-        if (data === '[DONE]') continue;
-        try {
-          const json = JSON.parse(data);
-          const delta = json.choices?.[0]?.delta?.content;
-          if (delta) { newText += delta; updateStreamMsg(originalContent + newText, ''); }
-        } catch(e) {}
-      }
-    }
-  } catch(e) {
-    if (e.name === 'AbortError') {
-      if (newText) newText += '\n\n*[已停止生成]*';
-    } else {
-      toast('续写失败：' + e.message, false);
-    }
-  }
-
-  if (newText) {
-    const parsed = parseThinking(newText);
-    lastAi.content = originalContent + (parsed.content || newText);
-    lastAi.duration = (Date.now() - startTime) / 1000;
-  }
-
-  finalizeStreamMsg();
-  if (!newText) { const el = document.getElementById('typing-msg'); if (el) el.remove(); }
-  isStreaming = false;
-  abortController = null;
-  setSendMode();
-  saveConversations();
-  renderMessages(conv.messages);
+    const apiMessages = conv.messages.map((m,i,arr) => { const msg={role:m.role,content:m.content}; if(m.role==='user'&&i===arr.length-2) msg.content=`[当前时间：${timeStr}]\n${m.content}`; return msg; });
+    apiMessages.push({role:'user',content:'[请从你上一条回复中断的地方继续写，不要重复已有内容，直接续写]'});
+    const res = await fetch(`${API}/v1/chat/completions`, { method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${TOKEN}`}, body:JSON.stringify({model:settings.model,messages:apiMessages,stream:true,conversation_id:conv.id}), signal:abortController.signal });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const reader = res.body.getReader(); const decoder = new TextDecoder(); let buffer = '';
+    while (true) { const{done,value}=await reader.read(); if(done) break; buffer+=decoder.decode(value,{stream:true}); const lines=buffer.split('\n'); buffer=lines.pop()||''; for(const line of lines){if(!line.startsWith('data: '))continue; const data=line.slice(6).trim(); if(data==='[DONE]')continue; try{const json=JSON.parse(data); const delta=json.choices?.[0]?.delta?.content; if(delta){newText+=delta; updateStreamMsg(originalContent+newText,'');}}catch(e){}}}
+  } catch(e) { if(e.name==='AbortError'){if(newText) newText+='\n\n*[已停止生成]*';} else toast('续写失败：'+e.message,false); }
+  if (newText) { const parsed=parseThinking(newText); lastAi.content=originalContent+(parsed.content||newText); lastAi.duration=(Date.now()-startTime)/1000; }
+  finalizeStreamMsg(); if(!newText){const el=document.getElementById('typing-msg'); if(el) el.remove();} isStreaming=false; abortController=null; setSendMode(); saveConversations(); renderMessages(conv.messages);
 }
 
 // ============================================================
 // Batch Delete
 // ============================================================
-function enterBatchMode(startIndex) {
-  isBatchMode = true;
-  batchSelected = new Set();
-  if (startIndex !== undefined) batchSelected.add(startIndex);
-  document.getElementById('batch-bar').style.display = 'flex';
-  document.getElementById('input-area').style.display = 'none';
-  updateBatchCount();
-  const conv = getCurrentConv();
-  if (conv) renderMessages(conv.messages);
-}
-
-function exitBatchMode() {
-  isBatchMode = false;
-  batchSelected = new Set();
-  document.getElementById('batch-bar').style.display = 'none';
-  document.getElementById('input-area').style.display = '';
-  const conv = getCurrentConv();
-  if (conv) renderMessages(conv.messages);
-}
-
-function toggleBatchSelect(index, checked) {
-  if (checked) batchSelected.add(index);
-  else batchSelected.delete(index);
-  updateBatchCount();
-}
-
-function updateBatchCount() {
-  const n = batchSelected.size;
-  document.getElementById('batch-count').textContent = `已选 ${n} 条`;
-  document.getElementById('batch-del-btn').disabled = n === 0;
-  document.getElementById('batch-del-btn').textContent = n > 0 ? `🗑️ 删除已选 (${n})` : '🗑️ 删除已选';
-}
-
-function confirmBatchDelete() {
-  const n = batchSelected.size;
-  if (n === 0) return;
-  if (!confirm(`确认删除 ${n} 条消息？`)) return;
-  const conv = getCurrentConv();
-  if (!conv) return;
-  const indices = Array.from(batchSelected).sort((a, b) => b - a);
-  for (const i of indices) conv.messages.splice(i, 1);
-  saveConversations();
-  exitBatchMode();
-  toast(`已删除 ${n} 条`, true);
-}
+function enterBatchMode(startIndex) { isBatchMode=true; batchSelected=new Set(); if(startIndex!==undefined) batchSelected.add(startIndex); document.getElementById('batch-bar').style.display='flex'; document.getElementById('input-area').style.display='none'; updateBatchCount(); const conv=getCurrentConv(); if(conv) renderMessages(conv.messages); }
+function exitBatchMode() { isBatchMode=false; batchSelected=new Set(); document.getElementById('batch-bar').style.display='none'; document.getElementById('input-area').style.display=''; const conv=getCurrentConv(); if(conv) renderMessages(conv.messages); }
+function toggleBatchSelect(index,checked) { if(checked) batchSelected.add(index); else batchSelected.delete(index); updateBatchCount(); }
+function updateBatchCount() { const n=batchSelected.size; document.getElementById('batch-count').textContent=`已选 ${n} 条`; const btn=document.getElementById('batch-del-btn'); btn.disabled=n===0; btn.textContent=n>0?`🗑️ 删除已选 (${n})`:'🗑️ 删除已选'; }
+function confirmBatchDelete() { const n=batchSelected.size; if(n===0||!confirm(`确认删除 ${n} 条消息？`))return; const conv=getCurrentConv(); if(!conv)return; const indices=Array.from(batchSelected).sort((a,b)=>b-a); for(const i of indices) conv.messages.splice(i,1); saveConversations(); exitBatchMode(); toast(`已删除 ${n} 条`,true); }
 
 // ============================================================
-// Input & Sidebar
+// Input, Sidebar, Nav
 // ============================================================
-function handleKey(e) {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-}
+function handleKey(e) { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault(); sendMessage();} }
+function autoResize(el) { el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,150)+'px'; }
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('overlay').classList.toggle('show'); }
+function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); }
 
-function autoResize(el) {
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 150) + 'px';
-}
+function togglePlusMenu(e) { e.stopPropagation(); document.getElementById('plus-menu').classList.toggle('open'); }
 
-function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('open');
-  document.getElementById('overlay').classList.toggle('show');
-}
-
-function closeSidebar() {
-  document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('overlay').classList.remove('show');
+function switchTab(tab) {
+  document.querySelectorAll('.nav-item').forEach((el,i) => el.classList.remove('active'));
+  if (tab === 'chat') {
+    document.querySelectorAll('.nav-item')[0].classList.add('active');
+  } else {
+    const tabs = ['chat','data','settings','theme','system'];
+    const idx = tabs.indexOf(tab);
+    if (idx >= 0) document.querySelectorAll('.nav-item')[idx]?.classList.add('active');
+    if (tab !== 'chat') toast(`${tab} 页面开发中~`, true);
+  }
 }
 
 // ============================================================
 // Utils
 // ============================================================
 function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function toast(msg,ok=true) { const el=document.createElement('div'); el.className=`toast ${ok?'toast-ok':'toast-err'}`; el.textContent=msg; document.body.appendChild(el); setTimeout(()=>el.remove(),3500); }
 
-function toast(msg, ok = true) {
-  const el = document.createElement('div');
-  el.className = `toast ${ok ? 'toast-ok' : 'toast-err'}`;
-  el.textContent = msg;
-  document.body.appendChild(el);
-  setTimeout(() => el.remove(), 3500);
-}
-  // ============================================================
+// ============================================================
 // Emoji Picker
 // ============================================================
 const EMOJIS = {
-  '常用': ['😊','😂','🥺','😭','😍','🥰','😘','😏','😎','🤔','😅','😢','💕','❤️','💖','👍','👋','🤗','😴','😋'],
-  '表情': ['😀','😃','😄','😁','😆','🤣','😇','😉','😌','😙','🥲','😛','😜','😝','🤑','🤭','🤫','🤨','😐','😑','😶','😒','🙄','😬','😮‍💨','😤','😠','😡','🤯','😳','🥵','🥶','😱','😰','😥','😓','🤗','🫣','🫡','🤐','🤮','🫠'],
-  '爱心': ['❤️','🧡','💛','💚','💙','💜','🤎','🖤','🤍','💗','💓','💞','💘','💝','❣️','💔','♥️','💑','👩‍❤️‍👨'],
-  '手势': ['👍','👎','👌','✌️','🤞','🤟','🤘','🤙','👈','👉','👆','👇','☝️','✋','🤚','🖐️','🖖','👋','🤝','🙏','✍️','💪','🫶'],
-  '动物': ['🐱','🐶','🐻','🐼','🐨','🐰','🦊','🐸','🐧','🐥','🦋','🐝','🐌','🐛','🌸','🌺','🌻','🌷','🍀','🌿'],
-  '食物': ['🍎','🍑','🍒','🍓','🥝','🍕','🍔','🍟','🧋','☕','🍰','🎂','🍩','🍫','🍬','🍭','🥤','🍜','🍣','🥟'],
-  '其他': ['⭐','🌙','☀️','🌈','🔥','💫','✨','🎉','🎀','🎁','🎵','🎶','💤','💭','💬','📌','📎','🏠','💻','📱']
+  '常用':['😊','😂','🥺','😭','😍','🥰','😘','😏','😎','🤔','😅','😢','💕','❤️','💖','👍','👋','🤗','😴','😋'],
+  '表情':['😀','😃','😄','😁','😆','🤣','😇','😉','😌','😙','🥲','😛','😜','😝','🤑','🤭','🤫','🤨','😐','😑','😶','😒','🙄','😬','😮‍💨','😤','😠','😡','🤯','😳','🥵','🥶','😱','😰','😥','😓','🤗','🫣','🫡','🤐','🤮','🫠'],
+  '爱心':['❤️','🧡','💛','💚','💙','💜','🤎','🖤','🤍','💗','💓','💞','💘','💝','❣️','💔','♥️','💑','👩‍❤️‍👨'],
+  '手势':['👍','👎','👌','✌️','🤞','🤟','🤘','🤙','👈','👉','👆','👇','☝️','✋','🤚','🖐️','🖖','👋','🤝','🙏','✍️','💪','🫶'],
+  '动物':['🐱','🐶','🐻','🐼','🐨','🐰','🦊','🐸','🐧','🐥','🦋','🐝','🐌','🐛','🌸','🌺','🌻','🌷','🍀','🌿'],
+  '食物':['🍎','🍑','🍒','🍓','🥝','🍕','🍔','🍟','🧋','☕','🍰','🎂','🍩','🍫','🍬','🍭','🥤','🍜','🍣','🥟'],
+  '其他':['⭐','🌙','☀️','🌈','🔥','💫','✨','🎉','🎀','🎁','🎵','🎶','💤','💭','💬','📌','📎','🏠','💻','📱']
 };
-
-function toggleEmoji(e) {
-  e.stopPropagation();
-  const panel = document.getElementById('emoji-panel');
-  if (panel.classList.contains('open')) {
-    panel.classList.remove('open');
-    return;
-  }
-  // Build panel content (only once)
-  if (!panel.innerHTML) {
-    let html = '';
-    for (const [cat, emojis] of Object.entries(EMOJIS)) {
-      html += `<div class="emoji-category">${cat}</div><div class="emoji-grid">`;
-      for (const em of emojis) {
-        html += `<span onclick="insertEmoji('${em}')">${em}</span>`;
-      }
-      html += '</div>';
-    }
-    panel.innerHTML = html;
-  }
-  panel.classList.add('open');
-}
-
-function insertEmoji(em) {
-  const input = document.getElementById('msg-input');
-  const start = input.selectionStart;
-  const end = input.selectionEnd;
-  input.value = input.value.slice(0, start) + em + input.value.slice(end);
-  input.selectionStart = input.selectionEnd = start + em.length;
-  input.focus();
-  autoResize(input);
-}
-
-// Close emoji panel when clicking outside
-document.addEventListener('click', function(e) {
-  if (!e.target.closest('.emoji-wrap')) {
-    const panel = document.getElementById('emoji-panel');
-    if (panel) panel.classList.remove('open');
-  }
-});
+function toggleEmoji(e) { e.stopPropagation(); const panel=document.getElementById('emoji-panel'); if(panel.classList.contains('open')){panel.classList.remove('open'); return;} if(!panel.innerHTML){let html=''; for(const[cat,emojis] of Object.entries(EMOJIS)){html+=`<div class="emoji-category">${cat}</div><div class="emoji-grid">`; for(const em of emojis) html+=`<span onclick="insertEmoji('${em}')">${em}</span>`; html+='</div>';} panel.innerHTML=html;} panel.classList.add('open'); }
+function insertEmoji(em) { const input=document.getElementById('msg-input'); const s=input.selectionStart,e=input.selectionEnd; input.value=input.value.slice(0,s)+em+input.value.slice(e); input.selectionStart=input.selectionEnd=s+em.length; input.focus(); autoResize(input); }
 </script>
 </body>
 </html>
