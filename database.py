@@ -563,6 +563,8 @@ async def init_tables():
 
 async def get_embedding(text: str, embed_url: str = None, embed_key: str = None) -> Optional[List[float]]:
     """调用 Embedding API 生成向量"""
+    text = text[:700]
+
     if not embed_url:
         if not EMBEDDING_API_KEY:
             print("⚠️  Embedding API Key 未设置")
